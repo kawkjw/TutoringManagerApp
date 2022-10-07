@@ -1,14 +1,7 @@
-import firebase from "firebase";
-import "firebase/firestore";
-import {
-    API_KEY,
-    AUTH_DOMAIN,
-    PROJECT_ID,
-    STORAGE_BUCKET,
-    MESSAGING_ID,
-    APP_ID,
-    MEASUREMENT_ID,
-} from "@env";
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_ID, APP_ID, MEASUREMENT_ID } from "@env";
 
 const firebaseConfig = {
     apiKey: API_KEY,
@@ -20,10 +13,8 @@ const firebaseConfig = {
     measurementId: MEASUREMENT_ID,
 };
 
-const myBase = firebase.initializeApp(firebaseConfig);
+const myBase = initializeApp(firebaseConfig);
 
 export default myBase;
-export const db = myBase.firestore();
-export const arrayDelete = (d) => firebase.firestore.FieldValue.arrayRemove(d);
-export const arrayUnion = (d) => firebase.firestore.FieldValue.arrayUnion(d);
-export const fieldDelete = () => firebase.firestore.FieldValue.delete();
+export const db = getFirestore(myBase);
+export const auth = getAuth(myBase);
