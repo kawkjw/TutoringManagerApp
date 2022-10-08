@@ -113,6 +113,7 @@ export default Auth = () => {
             },
             signOut: async () => {
                 signOut(auth);
+                await AsyncStorage.removeItem("userToken");
                 dispatch({ type: "SIGN_OUT" });
             },
             signUp: async (data) => {

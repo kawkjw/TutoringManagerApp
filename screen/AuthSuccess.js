@@ -6,7 +6,7 @@ import { doc, getDoc } from "firebase/firestore";
 import LoadingScreen from "./LoadingScreen";
 import { AuthContext } from "./Auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Test from "./Test";
+import TNavigator from "./Teacher/TNavigator";
 
 const Stack = createNativeStackNavigator();
 const MyStack = () => {
@@ -31,6 +31,7 @@ const MyStack = () => {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
+                console.log(user.uid);
                 const tempUid = await AsyncStorage.getItem("userToken");
                 if (tempUid === user.uid) {
                     await getData(user).then(() => {
@@ -51,7 +52,7 @@ const MyStack = () => {
             {isLoading ? (
                 <Stack.Screen name="Loading" component={LoadingScreen} options={{ headerShown: false }} />
             ) : (
-                <Stack.Screen name="Test" component={Test} options={{ headerShown: false }} />
+                <Stack.Screen name="Teacher" component={TNavigator} options={{ headerShown: false }} />
             )}
         </Stack.Navigator>
     );
