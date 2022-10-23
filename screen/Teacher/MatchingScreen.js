@@ -1,32 +1,17 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Button, Text, View, TextInput } from "react-native";
-import style from "../style.js";
-
-function EditProfileScreen({ navigation, route }) {
-    return (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-            <Text style={style.text}>매칭 프로필 수정하기</Text>
-        </View>
-    );
-}
-
-function HomeScreen({ navigation }) {
-    return (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-            <Text>학생 추천 목록</Text>
-            <Button title="나의 과외프로필 수정하기" onPress={() => navigation.navigate("EditProfile")} />
-        </View>
-    );
-}
+import MatchingHome from "./Matching/MatchingHome";
+import EditMatching from "./Matching/EditMatching";
+import AddMatching from "./Matching/AddMatching";
 
 const MatchingStack = createNativeStackNavigator();
 
 const MatchingStackScreen = ({ navigation, route }) => {
     return (
         <MatchingStack.Navigator>
-            <MatchingStack.Screen options={{ headerShown: false }} name="Matching" component={HomeScreen} />
-            <MatchingStack.Screen name="EditProfile" component={EditProfileScreen} />
+            <MatchingStack.Screen options={{ title: "과외 매칭" }} name="MatchingHome" component={MatchingHome} />
+            <MatchingStack.Screen options={{ title: "매칭 관리" }} name="EditMatching" component={EditMatching} />
+            <MatchingStack.Screen options={{ title: "매칭 프로필 추가" }} name="AddMatching" component={AddMatching} />
         </MatchingStack.Navigator>
     );
 };
