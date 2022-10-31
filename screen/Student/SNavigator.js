@@ -85,6 +85,6 @@ const MyTab = () => {
     );
 };
 
-export default TNavigator = () => {
+export default SNavigator = () => {
     return <MyTab />;
 };

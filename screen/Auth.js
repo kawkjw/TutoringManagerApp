@@ -152,6 +152,9 @@ export default Auth = () => {
                                     phoneNumber: currentUser.phoneNumber,
                                     id: currentUser.userId,
                                     createdDate: currentUser.createdDate,
+                                    memo: "",
+                                    isTeacher: false,
+                                    myClass: [],
                                 });
                                 await setDoc(doc(db, "ids", currentUser.id), {
                                     id: currentUser.userId,
