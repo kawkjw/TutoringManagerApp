@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
 import { Text, View, FlatList, Alert } from "react-native";
 import style from "../../style.js";
-import { getCurrentUser, db, createMessage } from "../../../config/MyBase.js";
+import { getCurrentUser, db, createMessage, auth } from "../../../config/MyBase.js";
 
-import { collection, doc, getDocs, orderBy, query, onSnapshot, QuerySnapshot } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, onSnapshot, where } from "firebase/firestore";
 import { GiftedChat, Send } from "react-native-gifted-chat";
 import { MaterialIcons } from "@expo/vector-icons";
+import { pushNotificationsToPerson } from "../../../config/MyExpo.js";
 
 const SendButton = (props) => {
     return (
@@ -52,11 +53,15 @@ const Channel = ({ navigation, route: { params } }) => {
 
     const _handleMessageSend = async (messageList) => {
         const newMessage = messageList[0];
-        try {
-            await createMessage({ channelId: params.id, message: newMessage });
-        } catch (e) {
-            Alert.alert("Send Message Error", e.message);
-        }
+        await createMessage({ channelId: params.id, message: newMessage })
+            .then(async () => {
+                await getDocs(query(collection(db, "users"), where("id", "==", params.inviteUser))).then(async (users) => {
+                    await pushNotificationsToPerson(auth.currentUser.displayName, users.docs[0].data().uid, "새로운 채팅", newMessage.text);
+                });
+            })
+            .catch((error) => {
+                Alert.alert("Send Message Error", error.message);
+            });
     };
     console.log("초대한 사람의 uid, name:     ", uid, name);
     console.log("초대할 사람의 id  (params(inviteUser)):    ", params);

@@ -5,8 +5,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-nat
 import { auth, db } from "../../../config/MyBase";
 import { arrayRemove, deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { useIsFocused } from "@react-navigation/native";
-import { AntDesign } from "@expo/vector-icons";
-import { async } from "@firebase/util";
+import { pushNotificationsToPerson } from "../../../config/MyExpo";
 
 export default ClassList = ({ navigation, route }) => {
     const [loading, setLoading] = useState(true);
@@ -98,7 +97,13 @@ export default ClassList = ({ navigation, route }) => {
                                                                         await updateDoc(doc(db, "users", c.teacherUid), {
                                                                             myClass: arrayRemove(c.id),
                                                                         });
-                                                                        await deleteDoc(doc(db, "classes", c.id)).then(() => {
+                                                                        await deleteDoc(doc(db, "classes", c.id)).then(async () => {
+                                                                            await pushNotificationsToPerson(
+                                                                                auth.currentUser.displayName,
+                                                                                c.teacherUid,
+                                                                                "초대 거절함",
+                                                                                `${auth.currentUser.displayName}이 거절하였습니다`
+                                                                            );
                                                                             onRefresh();
                                                                         });
                                                                     },
@@ -111,9 +116,17 @@ export default ClassList = ({ navigation, route }) => {
                                                 {
                                                     text: "수락",
                                                     onPress: async () => {
-                                                        await updateDoc(doc(db, "classes", c.id), { studentAccept: true }).then(() => {
-                                                            onRefresh();
-                                                        });
+                                                        await updateDoc(doc(db, "classes", c.id), { studentAccept: true }).then(
+                                                            async () => {
+                                                                await pushNotificationsToPerson(
+                                                                    auth.currentUser.displayName,
+                                                                    c.teacherUid,
+                                                                    "초대 수락함",
+                                                                    `${auth.currentUser.displayName}이 수락하였습니다`
+                                                                );
+                                                                onRefresh();
+                                                            }
+                                                        );
                                                     },
                                                 },
                                             ]);

@@ -5,6 +5,7 @@ import { TextInput, Button, HelperText, Checkbox } from "react-native-paper";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { auth, db } from "../../../config/MyBase";
 import { getDocs, query, collection, where, addDoc, updateDoc, doc, arrayUnion } from "firebase/firestore";
+import { pushNotificationsToPerson } from "../../../config/MyExpo";
 
 const AddClassStack = createNativeStackNavigator();
 
@@ -240,6 +241,13 @@ export default AddClass = () => {
                                                             myClass: arrayUnion(document.id),
                                                         });
                                                         await updateDoc(doc(db, "users", uid), { myClass: arrayUnion(document.id) });
+                                                        await pushNotificationsToPerson(
+                                                            auth.currentUser.displayName,
+                                                            uid,
+                                                            "새로운 수업 초대",
+                                                            "과외 수업 초대가 왔습니다",
+                                                            { navigation: "ClassList" }
+                                                        );
                                                     })
                                                     .then(() => {
                                                         Alert.alert(

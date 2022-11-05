@@ -155,6 +155,7 @@ export default Auth = () => {
                                     memo: "",
                                     isTeacher: false,
                                     myClass: [],
+                                    expoTokens: [],
                                 });
                                 await setDoc(doc(db, "ids", currentUser.id), {
                                     id: currentUser.userId,

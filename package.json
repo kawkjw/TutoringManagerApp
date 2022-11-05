@@ -16,6 +16,8 @@
     "expo": "~46.0.13",
     "expo-constants": "~13.2.4",
     "expo-firebase-recaptcha": "~2.3.0",
+    "expo-notifications": "~0.16.1",
+    "expo-server-sdk": "^3.7.0",
     "expo-splash-screen": "~0.16.2",
     "expo-status-bar": "~1.4.0",
     "expo-updates": "~0.14.6",
@@ -32,7 +34,8 @@
     "react-native-responsive-screen": "^1.4.2",
     "react-native-safe-area-context": "4.3.1",
     "react-native-screens": "~3.15.0",
-    "react-native-webview": "11.23.0"
+    "react-native-webview": "11.23.0",
+    "zlib": "^1.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
