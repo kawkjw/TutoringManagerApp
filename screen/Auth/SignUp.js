@@ -6,6 +6,7 @@ import { PhoneAuthProvider } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { FirebaseRecaptchaVerifierModal, FirebaseRecaptchaBanner } from "expo-firebase-recaptcha";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 export default SignUp = ({ navigation }) => {
     const appVerifier = useRef(null);
@@ -19,6 +20,7 @@ export default SignUp = ({ navigation }) => {
     const [chkUsedId, setChkUsedId] = useState(false);
     const [checkPw, setCheckPw] = useState(false);
     const [correctPw, setCorrectPw] = useState(false);
+    const [isTeacher, setIsTeacher] = useState(false);
 
     const { signUp } = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
@@ -157,6 +159,7 @@ export default SignUp = ({ navigation }) => {
             password,
             verifyCode,
             verificationId,
+            isTeacher,
         })
             .then(() => {
                 navigation.goBack();
@@ -185,8 +188,46 @@ export default SignUp = ({ navigation }) => {
                     enableOnAndroid={true}
                     enableAutomaticScroll
                 >
+                    <View style={{ marginBottom: 5, flexDirection: "row" }}>
+                        <TouchableOpacity
+                            style={{
+                                flex: 1,
+                                alignItems: "center",
+                                justifyContent: "center",
+                                height: hp("5%"),
+                                borderWidth: 1,
+                                backgroundColor: isTeacher ? "white" : "skyblue",
+                            }}
+                            onPress={() => {
+                                if (isTeacher) setIsTeacher(false);
+                            }}
+                        >
+                            <Text>학생</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{
+                                flex: 1,
+                                alignItems: "center",
+                                justifyContent: "center",
+                                height: hp("5%"),
+                                borderWidth: 1,
+                                borderLeftWidth: 0,
+                                backgroundColor: isTeacher ? "skyblue" : "white",
+                            }}
+                            onPress={() => {
+                                if (!isTeacher) setIsTeacher(true);
+                            }}
+                        >
+                            <Text>선생님</Text>
+                        </TouchableOpacity>
+                    </View>
                     <View style={{ marginBottom: 5 }}>
-                        <TextInput placeholder="이름" value={name} onChangeText={setName} style={{ flex: 1, borderWidth: 1, height: 40 }} />
+                        <TextInput
+                            placeholder="이름"
+                            value={name}
+                            onChangeText={setName}
+                            style={{ flex: 1, borderWidth: 1, height: hp("5%") }}
+                        />
                     </View>
                     <View style={{ marginBottom: 5 }}>
                         <View style={{ flexDirection: "row" }}>
@@ -195,7 +236,7 @@ export default SignUp = ({ navigation }) => {
                                     placeholder="아이디"
                                     value={id}
                                     onChangeText={setId}
-                                    style={{ flex: 1, borderWidth: 1, height: 40 }}
+                                    style={{ flex: 1, borderWidth: 1, height: hp("5%") }}
                                 />
                             </View>
                             <View style={{ justifyContent: "center" }}>
@@ -216,7 +257,7 @@ export default SignUp = ({ navigation }) => {
                     </View>
                     <View style={{ marginBottom: 5 }}>
                         <TextInput
-                            style={{ flex: 1, borderWidth: 1, height: 40 }}
+                            style={{ flex: 1, borderWidth: 1, height: hp("5%") }}
                             placeholder="비밀번호"
                             secureTextEntry={true}
                             value={password}
@@ -234,7 +275,7 @@ export default SignUp = ({ navigation }) => {
                     </View>
                     <View style={{ marginBottom: 5 }}>
                         <TextInput
-                            style={{ flex: 1, borderWidth: 1, height: 40 }}
+                            style={{ flex: 1, borderWidth: 1, height: hp("5%") }}
                             placeholder="비밀번호 확인"
                             secureTextEntry={true}
                             value={chkPassword}
@@ -252,7 +293,7 @@ export default SignUp = ({ navigation }) => {
                         <View style={{ marginBottom: 5, flexDirection: "row" }}>
                             <View style={{ flex: 8 }}>
                                 <TextInput
-                                    style={{ flex: 1, borderWidth: 1, height: 40 }}
+                                    style={{ flex: 1, borderWidth: 1, height: hp("5%") }}
                                     label="휴대폰 번호"
                                     placeholder="010-0000-0000"
                                     keyboardType="phone-pad"
@@ -279,7 +320,7 @@ export default SignUp = ({ navigation }) => {
                         </View>
                         <View>
                             <TextInput
-                                style={{ flex: 1, borderWidth: 1, height: 40 }}
+                                style={{ flex: 1, borderWidth: 1, height: hp("5%") }}
                                 label="인증코드"
                                 placeholder="123456"
                                 keyboardType="phone-pad"

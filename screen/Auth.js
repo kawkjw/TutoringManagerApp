@@ -117,7 +117,7 @@ export default Auth = () => {
                 dispatch({ type: "SIGN_OUT" });
             },
             signUp: async (data) => {
-                const { name, phoneNumber, userId, password, verificationId, verifyCode } = data;
+                const { name, phoneNumber, userId, password, verificationId, verifyCode, isTeacher } = data;
                 if (userId.length < 8) {
                     Alert.alert("경고", "아이디는 8자 이상으로 해주시기 바랍니다.", [{ text: "확인" }], { cancelable: false });
                     return;
@@ -153,9 +153,12 @@ export default Auth = () => {
                                     id: currentUser.userId,
                                     createdDate: currentUser.createdDate,
                                     memo: "",
-                                    isTeacher: false,
+                                    isTeacher: isTeacher,
                                     myClass: [],
                                     expoTokens: [],
+                                    education: "",
+                                    address: "",
+                                    firstLogin: true,
                                 });
                                 await setDoc(doc(db, "ids", currentUser.id), {
                                     id: currentUser.userId,
