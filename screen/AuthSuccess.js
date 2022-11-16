@@ -9,7 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import TNavigator from "./Teacher/TNavigator";
 import SNavigator from "./Student/SNavigator";
 import { registerForPushNotificationAsync } from "../config/MyExpo";
-import { Alert, Keyboard, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Keyboard, Platform, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
 import { Button, HelperText, TextInput } from "react-native-paper";
 import DropDownPicker from "react-native-dropdown-picker";
 
@@ -129,7 +129,7 @@ const MyStack = () => {
                             </HelperText>
                         </View>
                     ) : (
-                        <View style={{ padding: 20, zIndex: 500 }}>
+                        <View style={[Platform.OS === "ios" ? { zIndex: 1 } : null, { padding: 20 }]}>
                             <Text>자신의 성적 수준은?</Text>
                             <DropDownPicker
                                 open={open}
