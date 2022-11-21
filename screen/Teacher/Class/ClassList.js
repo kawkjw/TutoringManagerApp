@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { View, ScrollView, TouchableOpacity, Text, RefreshControl } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
+import { View, ScrollView, TouchableOpacity, Text, RefreshControl, StatusBar } from "react-native";
+import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Surface } from "react-native-paper";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { auth, db } from "../../../config/MyBase";
@@ -21,6 +21,7 @@ export default ClassList = ({ navigation, route }) => {
                 await getDoc(doc(db, "classes", id)).then(async (document) => {
                     let docTemp = document.data();
                     const { dayBool, studentUid } = docTemp;
+                    docTemp.id = document.id;
 
                     await getDoc(doc(db, "users", studentUid)).then((student) => {
                         docTemp.studentName = student.data().name;
@@ -59,6 +60,7 @@ export default ClassList = ({ navigation, route }) => {
 
     return (
         <View style={{ flex: 1, alignItems: "center" }}>
+            <StatusBar barStyle={"dark-content"} />
             <View style={{ flex: 10, alignSelf: "stretch" }}>
                 <ScrollView
                     style={{ flex: 1, alignSelf: "stretch" }}
@@ -73,7 +75,11 @@ export default ClassList = ({ navigation, route }) => {
                     ) : (
                         <>
                             {myClass.map((c, index) => (
-                                <TouchableOpacity key={index} style={{ marginVertical: 5 }} onPress={() => {}}>
+                                <TouchableOpacity
+                                    key={index}
+                                    style={{ marginVertical: 5 }}
+                                    onPress={() => navigation.navigate("ViewClass")}
+                                >
                                     <Surface
                                         style={{
                                             width: wp("90%"),
@@ -89,11 +95,21 @@ export default ClassList = ({ navigation, route }) => {
                                         </View>
                                         <Text style={{ marginTop: 8 }}>{c.dayString}</Text>
                                         {c.studentAccept ? (
-                                            c.memo.length === 0 ? (
-                                                <Text style={{ marginTop: 8 }}>메모 없음</Text>
-                                            ) : (
-                                                <Text style={{ marginTop: 8 }}>{c.memo[c.memo.length - 1]}</Text>
-                                            )
+                                            <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
+                                                {c.memo.length === 0 ? (
+                                                    <Text style={{ marginTop: 8 }}>메모 없음</Text>
+                                                ) : (
+                                                    <Text style={{ marginTop: 8 }}>{c.memo[c.memo.length - 1]}</Text>
+                                                )}
+                                                <TouchableOpacity onPress={() => navigation.navigate("ViewMemo", { classData: c })}>
+                                                    <MaterialCommunityIcons
+                                                        name="pencil-box-outline"
+                                                        size={19}
+                                                        color="black"
+                                                        style={{ marginLeft: 3 }}
+                                                    />
+                                                </TouchableOpacity>
+                                            </View>
                                         ) : (
                                             <Text style={{ marginTop: 8 }}>아직 수락안함</Text>
                                         )}

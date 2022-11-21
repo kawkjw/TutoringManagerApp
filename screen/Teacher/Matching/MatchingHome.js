@@ -1,10 +1,13 @@
 import React from "react";
-import { View, ScrollView, TouchableOpacity, Text } from "react-native";
+import { View, ScrollView, TouchableOpacity, Text, StatusBar } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { Surface } from "react-native-paper";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 export default MatchingHome = ({ navigation, route }) => {
     return (
         <View style={{ flex: 1, alignItems: "center" }}>
+            <StatusBar barStyle={"dark-content"} />
             <View style={{ flex: 1, flexDirection: "row" }}>
                 <View style={{ flex: 3, justifyContent: "center", paddingLeft: 10 }}>
                     <Text>추천된 학생 목록</Text>
@@ -22,69 +25,135 @@ export default MatchingHome = ({ navigation, route }) => {
                     contentContainerStyle={{ alignItems: "center" }}
                     showsVerticalScrollIndicator={false}
                 >
-                    <TouchableOpacity style={{ flexDirection: "row", marginVertical: 5 }}>
-                        <View style={{ flex: 1, alignItems: "center", justifyContent: "center", borderWidth: 1, marginHorizontal: 10 }}>
-                            <Ionicons name="person" size={70} color="black" />
-                        </View>
-                        <View style={{ flex: 3, flexDirection: "column" }}>
-                            <View style={{ flex: 1 }}>
-                                <Text>test</Text>
+                    <TouchableOpacity style={{ marginVertical: 5 }} onPress={() => navigation.navigate("ViewStudent")}>
+                        <Surface
+                            style={{
+                                width: wp("90%"),
+                                height: hp("13%"),
+                                paddingHorizontal: 10,
+                                justifyContent: "center",
+                                flexDirection: "row",
+                            }}
+                        >
+                            <View style={{ flex: 2, alignItems: "center", justifyContent: "center", marginHorizontal: 10 }}>
+                                <Ionicons name="person" size={70} color="black" />
                             </View>
-                            <View style={{ flex: 1 }}>
-                                <Text>test2</Text>
+                            <View style={{ flex: 4, flexDirection: "column" }}>
+                                <View style={{ flex: 1, justifyContent: "center" }}>
+                                    <Text>김철수 학생</Text>
+                                </View>
+                                <View style={{ flex: 1, justifyContent: "center" }}>
+                                    <Text>정석고 1학년 / 성적 중하위</Text>
+                                </View>
+                                <View style={{ flex: 1, justifyContent: "center" }}>
+                                    <Text>과외비 45만원</Text>
+                                </View>
                             </View>
-                            <View style={{ flex: 1 }}>
-                                <Text>test3</Text>
-                            </View>
-                        </View>
+                        </Surface>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ flexDirection: "row", marginVertical: 5 }}>
-                        <View style={{ flex: 1, alignItems: "center", justifyContent: "center", borderWidth: 1, marginHorizontal: 10 }}>
-                            <Ionicons name="person" size={70} color="black" />
-                        </View>
-                        <View style={{ flex: 3, flexDirection: "column" }}>
-                            <View style={{ flex: 1 }}>
-                                <Text>test</Text>
+                    <TouchableOpacity style={{ marginVertical: 5 }} onPress={() => {}}>
+                        <Surface
+                            style={{
+                                width: wp("90%"),
+                                height: hp("13%"),
+                                paddingHorizontal: 10,
+                                justifyContent: "center",
+                                flexDirection: "row",
+                            }}
+                        >
+                            <View style={{ flex: 2, alignItems: "center", justifyContent: "center", marginHorizontal: 10 }}>
+                                <Ionicons name="person" size={70} color="black" />
                             </View>
-                            <View style={{ flex: 1 }}>
-                                <Text>test2</Text>
+                            <View style={{ flex: 4, flexDirection: "column" }}>
+                                <View style={{ flex: 1, justifyContent: "center" }}>
+                                    <Text>최민형 학생</Text>
+                                </View>
+                                <View style={{ flex: 1, justifyContent: "center" }}>
+                                    <Text>인하고 3학년 / 성적 중위</Text>
+                                </View>
+                                <View style={{ flex: 1, justifyContent: "center" }}>
+                                    <Text>과외비 55만원</Text>
+                                </View>
                             </View>
-                            <View style={{ flex: 1 }}>
-                                <Text>test3</Text>
-                            </View>
-                        </View>
+                        </Surface>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ flexDirection: "row", marginVertical: 5 }}>
-                        <View style={{ flex: 1, alignItems: "center", justifyContent: "center", borderWidth: 1, marginHorizontal: 10 }}>
-                            <Ionicons name="person" size={70} color="black" />
-                        </View>
-                        <View style={{ flex: 3, flexDirection: "column" }}>
-                            <View style={{ flex: 1 }}>
-                                <Text>test</Text>
+                    <TouchableOpacity style={{ marginVertical: 5 }} onPress={() => {}}>
+                        <Surface
+                            style={{
+                                width: wp("90%"),
+                                height: hp("13%"),
+                                paddingHorizontal: 10,
+                                justifyContent: "center",
+                                flexDirection: "row",
+                            }}
+                        >
+                            <View style={{ flex: 2, alignItems: "center", justifyContent: "center", marginHorizontal: 10 }}>
+                                <Ionicons name="person" size={70} color="black" />
                             </View>
-                            <View style={{ flex: 1 }}>
-                                <Text>test2</Text>
+                            <View style={{ flex: 4, flexDirection: "column" }}>
+                                <View style={{ flex: 1, justifyContent: "center" }}>
+                                    <Text>이진수 학생</Text>
+                                </View>
+                                <View style={{ flex: 1, justifyContent: "center" }}>
+                                    <Text>정석고 2학년 / 성적 중상위</Text>
+                                </View>
+                                <View style={{ flex: 1, justifyContent: "center" }}>
+                                    <Text>과외비 50만원</Text>
+                                </View>
                             </View>
-                            <View style={{ flex: 1 }}>
-                                <Text>test3</Text>
-                            </View>
-                        </View>
+                        </Surface>
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ flexDirection: "row", marginVertical: 5 }}>
-                        <View style={{ flex: 1, alignItems: "center", justifyContent: "center", borderWidth: 1, marginHorizontal: 10 }}>
-                            <Ionicons name="person" size={70} color="black" />
-                        </View>
-                        <View style={{ flex: 3, flexDirection: "column" }}>
-                            <View style={{ flex: 1 }}>
-                                <Text>test</Text>
+                    <TouchableOpacity style={{ marginVertical: 5 }} onPress={() => {}}>
+                        <Surface
+                            style={{
+                                width: wp("90%"),
+                                height: hp("13%"),
+                                paddingHorizontal: 10,
+                                justifyContent: "center",
+                                flexDirection: "row",
+                            }}
+                        >
+                            <View style={{ flex: 2, alignItems: "center", justifyContent: "center", marginHorizontal: 10 }}>
+                                <Ionicons name="person" size={70} color="black" />
                             </View>
-                            <View style={{ flex: 1 }}>
-                                <Text>test2</Text>
+                            <View style={{ flex: 4, flexDirection: "column" }}>
+                                <View style={{ flex: 1, justifyContent: "center" }}>
+                                    <Text>박지훈 학생</Text>
+                                </View>
+                                <View style={{ flex: 1, justifyContent: "center" }}>
+                                    <Text>정석고 1학년 / 성적 중상위</Text>
+                                </View>
+                                <View style={{ flex: 1, justifyContent: "center" }}>
+                                    <Text>과외비 40만원</Text>
+                                </View>
                             </View>
-                            <View style={{ flex: 1 }}>
-                                <Text>test3</Text>
+                        </Surface>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ marginVertical: 5 }} onPress={() => {}}>
+                        <Surface
+                            style={{
+                                width: wp("90%"),
+                                height: hp("13%"),
+                                paddingHorizontal: 10,
+                                justifyContent: "center",
+                                flexDirection: "row",
+                            }}
+                        >
+                            <View style={{ flex: 2, alignItems: "center", justifyContent: "center", marginHorizontal: 10 }}>
+                                <Ionicons name="person" size={70} color="black" />
                             </View>
-                        </View>
+                            <View style={{ flex: 4, flexDirection: "column" }}>
+                                <View style={{ flex: 1, justifyContent: "center" }}>
+                                    <Text>안정훈 학생</Text>
+                                </View>
+                                <View style={{ flex: 1, justifyContent: "center" }}>
+                                    <Text>인하고 1학년 / 성적 상위</Text>
+                                </View>
+                                <View style={{ flex: 1, justifyContent: "center" }}>
+                                    <Text>과외비 60만원</Text>
+                                </View>
+                            </View>
+                        </Surface>
                     </TouchableOpacity>
                 </ScrollView>
             </View>
