@@ -78,7 +78,7 @@ export default ClassList = ({ navigation, route }) => {
                                 <TouchableOpacity
                                     key={index}
                                     style={{ marginVertical: 5 }}
-                                    onPress={() => navigation.navigate("ViewClass")}
+                                    onPress={() => navigation.navigate("ViewClass", { classData: c })}
                                 >
                                     <Surface
                                         style={{

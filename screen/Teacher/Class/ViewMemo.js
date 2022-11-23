@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView, Keyboard, Alert } from "react-native";
-import { Surface, TextInput, Button } from "react-native-paper";
+import { Surface, TextInput, Button, List } from "react-native-paper";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { AntDesign } from "@expo/vector-icons";
 import { arrayRemove, doc, getDoc, updateDoc } from "firebase/firestore";
@@ -15,6 +15,8 @@ export default ViewMemo = ({ navigation, route }) => {
     const [memoText, setMemoText] = useState("");
     const [isNew, setIsNew] = useState(false);
     const [memoIndex, setMemoIndex] = useState(0);
+    const [expanded, setExpanded] = useState(false);
+    const day = ["월", "화", "수", "목", "금", "토", "일"];
 
     const getMemo = async () => {
         await getDoc(doc(db, "classes", classData.id)).then((classDoc) => {
@@ -29,6 +31,47 @@ export default ViewMemo = ({ navigation, route }) => {
             });
         }
     }, [loading]);
+
+    const DayTime = () => {
+        return (
+            <List.Section>
+                <List.Accordion
+                    title={"수업 요일 " + classData.dayString}
+                    expanded={expanded}
+                    onPress={() => setExpanded(!expanded)}
+                    left={(props) => <List.Icon {...props} icon={expanded ? "chevron-down" : "chevron-right"} />}
+                    right={() => undefined}
+                    style={{ padding: 0, backgroundColor: "#e6f7ff" }}
+                    titleStyle={{ fontWeight: "bold", fontSize: 20 }}
+                >
+                    {classData.dayBool.map((b, index) => {
+                        if (b) {
+                            const timeString =
+                                classData.dayTime[index].startHour +
+                                ":" +
+                                classData.dayTime[index].startMinute +
+                                " ~ " +
+                                classData.dayTime[index].endHour +
+                                ":" +
+                                classData.dayTime[index].endMinute;
+                            return (
+                                <List.Item
+                                    key={index}
+                                    style={{ paddingLeft: 40 }}
+                                    title={timeString}
+                                    left={(props) => (
+                                        <View style={{ alignItems: "center", justifyContent: "center" }}>
+                                            <Text style={{ fontWeight: "bold", fontSize: 20 }}>{day[index] + " "}</Text>
+                                        </View>
+                                    )}
+                                />
+                            );
+                        }
+                    })}
+                </List.Accordion>
+            </List.Section>
+        );
+    };
 
     return (
         <View style={{ flex: 1, backgroundColor: "#e6f7ff" }}>
@@ -143,7 +186,7 @@ export default ViewMemo = ({ navigation, route }) => {
                     <Text style={{ fontSize: 15, marginRight: 10 }}>{classData.count}회 수업</Text>
                     <Text style={{ fontSize: 15 }}>{classData.studentName} 학생</Text>
                 </View>
-                <Text style={{ fontWeight: "bold", fontSize: 20 }}>토 일 13:00 ~ 15:00</Text>
+                <DayTime />
             </View>
             <ScrollView
                 style={{ flex: 1, alignSelf: "stretch" }}
