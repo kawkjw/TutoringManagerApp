@@ -9,7 +9,6 @@ import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
 import { db } from "../../../config/MyBase";
 
 export default ViewLog = ({ navigation, route }) => {
-    console.log(route.params);
     const classData = route.params?.classData;
     const logData = route.params?.logData;
     const isNew = route.params?.isNew;
@@ -92,131 +91,134 @@ export default ViewLog = ({ navigation, route }) => {
                     <Surface
                         style={{
                             width: wp("90%"),
-                            height: hp("50%"),
+                            height: hp("65%"),
                             padding: 15,
                         }}
                     >
-                        <View style={{ width: wp("70%") }}>
-                            {modifyBookName ? (
+                        <View style={{ flex: 1 }}>
+                            <View style={{ width: wp("70%") }}>
+                                {modifyBookName ? (
+                                    <TextInput
+                                        dense={true}
+                                        label="책 이름"
+                                        value={bookName}
+                                        onChangeText={setBookName}
+                                        style={{ marginBottom: 5 }}
+                                    />
+                                ) : (
+                                    <Text style={{ marginBottom: 5, fontSize: 15 }}>{bookName}</Text>
+                                )}
+                                <View style={{ width: wp("50%") }}>
+                                    <ProgressBar
+                                        progress={Number(progress) / 100}
+                                        style={{ height: hp("2%"), borderRadius: 10, marginBottom: 5 }}
+                                    />
+                                </View>
+                                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                    {modifyProgress ? (
+                                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                            <TextInput
+                                                mode="outlined"
+                                                dense={true}
+                                                maxLength={3}
+                                                value={progress}
+                                                onChangeText={setProgress}
+                                                onFocus={() => setIsChange(true)}
+                                                keyboardType="phone-pad"
+                                                style={{ marginRight: 3, height: hp("3%") }}
+                                            />
+                                            <Text style={{ fontSize: 15, paddingTop: 5 }}>% 진행</Text>
+                                        </View>
+                                    ) : (
+                                        <Text style={{ fontSize: 15 }}>{progress}% 진행</Text>
+                                    )}
+                                    <TouchableOpacity style={{ marginLeft: 5 }} onPress={() => setModifyProgress(!modifyProgress)}>
+                                        <MaterialCommunityIcons name="pencil-box-outline" size={24} color="black" />
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            <View style={{ marginTop: 20 }}>
+                                <Text style={{ fontSize: 20, marginBottom: 5 }}>오늘 배운 것</Text>
                                 <TextInput
                                     dense={true}
-                                    label="책 이름"
-                                    value={bookName}
-                                    onChangeText={setBookName}
+                                    style={{ marginBottom: 10 }}
+                                    value={todayStudy}
+                                    onChangeText={setTodayStudy}
+                                    onFocus={() => {
+                                        setModifyProgress(false);
+                                        setIsChange(true);
+                                    }}
+                                />
+                                <Text style={{ fontSize: 20, marginBottom: 5 }}>다음 시간에 배울 것</Text>
+                                <TextInput
+                                    dense={true}
+                                    style={{ marginBottom: 10 }}
+                                    value={nextStudy}
+                                    onChangeText={setNextStudy}
+                                    onFocus={() => {
+                                        setModifyProgress(false);
+                                        setIsChange(true);
+                                    }}
+                                />
+                                <Text style={{ fontSize: 20, marginBottom: 5 }}>오늘의 숙제</Text>
+                                <TextInput
+                                    dense={true}
                                     style={{ marginBottom: 5 }}
-                                />
-                            ) : (
-                                <Text style={{ marginBottom: 5, fontSize: 15 }}>{bookName}</Text>
-                            )}
-                            <View style={{ width: wp("50%") }}>
-                                <ProgressBar
-                                    progress={Number(progress) / 100}
-                                    style={{ height: hp("2%"), borderRadius: 10, marginBottom: 5 }}
+                                    value={homework}
+                                    onChangeText={setHomework}
+                                    onFocus={() => {
+                                        setModifyProgress(false);
+                                        setIsChange(true);
+                                    }}
                                 />
                             </View>
-                            <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                {modifyProgress ? (
-                                    <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                        <TextInput
-                                            mode="outlined"
-                                            dense={true}
-                                            maxLength={3}
-                                            value={progress}
-                                            onChangeText={setProgress}
-                                            onFocus={() => setIsChange(true)}
-                                            keyboardType="phone-pad"
-                                            style={{ marginRight: 3, height: hp("3%") }}
-                                        />
-                                        <Text style={{ fontSize: 15, paddingTop: 5 }}>% 진행</Text>
-                                    </View>
-                                ) : (
-                                    <Text style={{ fontSize: 15 }}>{progress}% 진행</Text>
-                                )}
-                                <TouchableOpacity style={{ marginLeft: 5 }} onPress={() => setModifyProgress(!modifyProgress)}>
-                                    <MaterialCommunityIcons name="pencil-box-outline" size={24} color="black" />
-                                </TouchableOpacity>
-                            </View>
                         </View>
-                        <View style={{ marginTop: 20 }}>
-                            <Text style={{ fontSize: 20, marginBottom: 5 }}>오늘 배운 것</Text>
-                            <TextInput
-                                dense={true}
-                                style={{ marginBottom: 10 }}
-                                value={todayStudy}
-                                onChangeText={setTodayStudy}
-                                onFocus={() => {
-                                    setModifyProgress(false);
-                                    setIsChange(true);
+                        <View style={{ alignItems: "flex-end" }}>
+                            <Button
+                                mode="outlined"
+                                onPress={async () => {
+                                    if (isNew) {
+                                        await addDoc(collection(db, "classes", classData.id, "logs"), {
+                                            date: date,
+                                            count: count,
+                                            progress: Number(progress),
+                                            bookName: bookName,
+                                            todayStudy: todayStudy,
+                                            nextStudy: nextStudy,
+                                            homework: homework,
+                                        }).then(async () => {
+                                            await updateDoc(doc(db, "classes", classData.id), { count: classData.count + 1 });
+                                            Alert.alert(
+                                                "성공",
+                                                "일지 등록 완료하였습니다.",
+                                                [{ text: "확인", onPress: () => navigation.goBack() }],
+                                                { cancelable: false }
+                                            );
+                                        });
+                                    } else {
+                                        await updateDoc(doc(db, "classes", classData.id, "logs", logData.logId), {
+                                            date: date,
+                                            count: count,
+                                            progress: Number(progress),
+                                            bookName: bookName,
+                                            todayStudy: todayStudy,
+                                            nextStudy: nextStudy,
+                                            homework: homework,
+                                        }).then(() => {
+                                            Alert.alert(
+                                                "성공",
+                                                "일지 수정 완료하였습니다.",
+                                                [{ text: "확인", onPress: () => navigation.goBack() }],
+                                                { cancelable: false }
+                                            );
+                                        });
+                                    }
                                 }}
-                            />
-                            <Text style={{ fontSize: 20, marginBottom: 5 }}>다음 시간에 배울 것</Text>
-                            <TextInput
-                                dense={true}
-                                style={{ marginBottom: 10 }}
-                                value={nextStudy}
-                                onChangeText={setNextStudy}
-                                onFocus={() => {
-                                    setModifyProgress(false);
-                                    setIsChange(true);
-                                }}
-                            />
-                            <Text style={{ fontSize: 20, marginBottom: 5 }}>오늘의 숙제</Text>
-                            <TextInput
-                                dense={true}
-                                style={{ marginBottom: 5 }}
-                                value={homework}
-                                onChangeText={setHomework}
-                                onFocus={() => {
-                                    setModifyProgress(false);
-                                    setIsChange(true);
-                                }}
-                            />
+                                disabled={isNew ? false : isChange ? false : true}
+                            >
+                                {isNew ? "등록" : "수정"}
+                            </Button>
                         </View>
-                        <Button
-                            mode="outlined"
-                            style={{ position: "absolute", right: 10, bottom: 10 }}
-                            onPress={async () => {
-                                if (isNew) {
-                                    await addDoc(collection(db, "classes", classData.id, "logs"), {
-                                        date: date,
-                                        count: count,
-                                        progress: Number(progress),
-                                        bookName: bookName,
-                                        todayStudy: todayStudy,
-                                        nextStudy: nextStudy,
-                                        homework: homework,
-                                    }).then(async () => {
-                                        await updateDoc(doc(db, "classes", classData.id), { count: classData.count + 1 });
-                                        Alert.alert(
-                                            "성공",
-                                            "일지 등록 완료하였습니다.",
-                                            [{ text: "확인", onPress: () => navigation.goBack() }],
-                                            { cancelable: false }
-                                        );
-                                    });
-                                } else {
-                                    await updateDoc(doc(db, "classes", classData.id, "logs", logData.logId), {
-                                        date: date,
-                                        count: count,
-                                        progress: Number(progress),
-                                        bookName: bookName,
-                                        todayStudy: todayStudy,
-                                        nextStudy: nextStudy,
-                                        homework: homework,
-                                    }).then(() => {
-                                        Alert.alert(
-                                            "성공",
-                                            "일지 수정 완료하였습니다.",
-                                            [{ text: "확인", onPress: () => navigation.goBack() }],
-                                            { cancelable: false }
-                                        );
-                                    });
-                                }
-                            }}
-                            disabled={isNew ? false : isChange ? false : true}
-                        >
-                            {isNew ? "등록" : "수정"}
-                        </Button>
                     </Surface>
                 </TouchableOpacity>
             </View>
