@@ -90,6 +90,7 @@ export default EditMatching = ({ navigation, route }) => {
                                     onPress={() => {
                                         console.log(d.id);
                                         updateMatchingInfo(d.id, d.subject);
+                                        navigation.replace("MatchingHome");
                                     }}
                                 >
                                     <Text>이 정보로 선생님 추천 받기</Text>

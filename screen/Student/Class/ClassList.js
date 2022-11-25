@@ -6,6 +6,7 @@ import { auth, db } from "../../../config/MyBase";
 import { arrayRemove, deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { useIsFocused } from "@react-navigation/native";
 import { pushNotificationsToPerson } from "../../../config/MyExpo";
+import { uploadNewClassSchedule } from "../../../config/calendarFunctions.js";
 
 export default ClassList = ({ navigation, route }) => {
     const [loading, setLoading] = useState(true);
@@ -68,7 +69,13 @@ export default ClassList = ({ navigation, route }) => {
                     refreshControl={<RefreshControl refreshing={loading} onRefresh={onRefresh} />}
                 >
                     {loading ? (
-                        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+                        <View
+                            style={{
+                                flex: 1,
+                                alignItems: "center",
+                                justifyContent: "center",
+                            }}
+                        >
                             <Text>Loading...</Text>
                         </View>
                     ) : (
@@ -116,21 +123,23 @@ export default ClassList = ({ navigation, route }) => {
                                                 {
                                                     text: "수락",
                                                     onPress: async () => {
-                                                        await updateDoc(doc(db, "classes", c.id), { studentAccept: true }).then(
-                                                            async () => {
-                                                                await pushNotificationsToPerson(
-                                                                    auth.currentUser.displayName,
-                                                                    c.teacherUid,
-                                                                    "초대 수락함",
-                                                                    `${auth.currentUser.displayName}이 수락하였습니다`
-                                                                );
-                                                                onRefresh();
-                                                            }
-                                                        );
+                                                        uploadNewClassSchedule(c);
+                                                        await updateDoc(doc(db, "classes", c.id), {
+                                                            studentAccept: true,
+                                                        }).then(async () => {
+                                                            await pushNotificationsToPerson(
+                                                                auth.currentUser.displayName,
+                                                                c.teacherUid,
+                                                                "초대 수락함",
+                                                                `${auth.currentUser.displayName}이 수락하였습니다`
+                                                            );
+                                                            onRefresh();
+                                                        });
                                                     },
                                                 },
                                             ]);
                                         } else {
+                                            navigation.navigate("ViewClass", { classData: c });
                                         }
                                     }}
                                 >

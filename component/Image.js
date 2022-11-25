@@ -15,7 +15,7 @@ const PhotoButton = ({ onPress }) => {
 
 const onChangeImage = () => {};
 
-const Image_ = ({ url, imageStyle, rounded, showButton, onChangeImage }) => {
+const Image_ = ({ url, imageStyle, rounded, showButton, onChangeImage, width_, height_ }) => {
     // console.log(url);
 
     useEffect(() => {
@@ -59,8 +59,8 @@ const Image_ = ({ url, imageStyle, rounded, showButton, onChangeImage }) => {
                 source={{ uri: url }}
                 style={{
                     backgroundColor: "green",
-                    width: 100,
-                    height: 100,
+                    width: width_ ? width_ : 100,
+                    height: height_ ? height_ : 100,
                     borderRadius: 50,
                     // borderRadius: 8,
                     // backgroundColor: style.img.backgroundColor,

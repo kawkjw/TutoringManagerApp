@@ -28,7 +28,7 @@ const SendButton = (props) => {
 
 const Channel = ({ navigation, route: { params } }) => {
     //console.log('채널 안');
-    //console.log(params);
+    console.log(params);
     // {"channelId": "JM9GLE7QwHwjD8aVJQsu", "displayName": "선생3",
     // "displayPhotoUrl": "https://firebasestorage.googleapis.com/v0/b/crescendo-b984d.appspot.com/o/profile%2FWkjsWVFc59hz9lpwi7szwv6FCrr1%2Fphoto.png?alt=media&token=9dfc2balt=media&token=9dfc2b07-1f7f-44ac-83e4-a425ca118b2a",
     // "otherUid": "WkjsWVFc59hz9lpwi7szwv6FCrr1"}
@@ -58,17 +58,15 @@ const Channel = ({ navigation, route: { params } }) => {
 
     const _handleMessageSend = async (messageList) => {
         const newMessage = messageList[0];
-        try {
-            //console.log('핸들메세지내부');
-            //console.log(params?.channelId);
-            //console.log(newMessage);
-            await createMessage({
-                channelId: params?.channelId,
-                message: newMessage,
+        await createMessage({ channelId: params?.channelId, message: newMessage })
+            .then(async () => {
+                await getDocs(query(collection(db, "users"), where("id", "==", params.inviteUser))).then(async (users) => {
+                    await pushNotificationsToPerson(auth.currentUser.displayName, users.docs[0].data().uid, "새로운 채팅", newMessage.text);
+                });
+            })
+            .catch((error) => {
+                Alert.alert("Send Message Error", error.message);
             });
-        } catch (e) {
-            Alert.alert("Send Message Error", e.message);
-        }
     };
     return (
         <View style={{ flex: 1, backgroundColor: style.colorList.skyBlue }}>

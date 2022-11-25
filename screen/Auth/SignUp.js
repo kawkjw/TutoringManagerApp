@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { View, TouchableOpacity, Keyboard, Alert, Platform, TextInput, Button, Text } from "react-native";
+import { View, TouchableOpacity, Keyboard, Alert, Platform, Text } from "react-native";
 import { AuthContext } from "../Auth";
 import myBase, { db, auth } from "../../config/MyBase";
 import { PhoneAuthProvider } from "firebase/auth";
@@ -7,6 +7,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { FirebaseRecaptchaVerifierModal, FirebaseRecaptchaBanner } from "expo-firebase-recaptcha";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
+import { Button, HelperText, TextInput } from "react-native-paper";
 
 export default SignUp = ({ navigation }) => {
     const appVerifier = useRef(null);
@@ -195,8 +196,9 @@ export default SignUp = ({ navigation }) => {
                                 alignItems: "center",
                                 justifyContent: "center",
                                 height: hp("5%"),
-                                borderWidth: 1,
                                 backgroundColor: isTeacher ? "white" : "skyblue",
+                                borderTopLeftRadius: 5,
+                                borderBottomLeftRadius: 5,
                             }}
                             onPress={() => {
                                 if (isTeacher) setIsTeacher(false);
@@ -210,9 +212,9 @@ export default SignUp = ({ navigation }) => {
                                 alignItems: "center",
                                 justifyContent: "center",
                                 height: hp("5%"),
-                                borderWidth: 1,
-                                borderLeftWidth: 0,
                                 backgroundColor: isTeacher ? "skyblue" : "white",
+                                borderTopRightRadius: 5,
+                                borderBottomRightRadius: 5,
                             }}
                             onPress={() => {
                                 if (!isTeacher) setIsTeacher(true);
@@ -223,41 +225,49 @@ export default SignUp = ({ navigation }) => {
                     </View>
                     <View style={{ marginBottom: 5 }}>
                         <TextInput
+                            dense={true}
                             placeholder="이름"
                             value={name}
                             onChangeText={setName}
-                            style={{ flex: 1, borderWidth: 1, height: hp("5%") }}
+                            style={{ flex: 1, backgroundColor: "white" }}
                         />
                     </View>
                     <View style={{ marginBottom: 5 }}>
                         <View style={{ flexDirection: "row" }}>
                             <View style={{ flex: 9 }}>
                                 <TextInput
+                                    dense={true}
                                     placeholder="아이디"
                                     value={id}
                                     onChangeText={setId}
-                                    style={{ flex: 1, borderWidth: 1, height: hp("5%") }}
+                                    style={{ flex: 1, backgroundColor: "white" }}
                                 />
                             </View>
                             <View style={{ justifyContent: "center" }}>
                                 <Button
-                                    title="중복확인"
+                                    mode="contained"
                                     style={{
                                         flex: 1,
-                                        marginTop: 5,
                                         marginLeft: 6,
                                         justifyContent: "center",
                                     }}
                                     onPress={checkUsedId}
                                     disabled={!id}
-                                />
+                                >
+                                    중복확인
+                                </Button>
                             </View>
                         </View>
-                        {id.length < 8 && id ? <Text>아이디는 8자 이상으로 해주시기 바랍니다.</Text> : null}
+                        {id.length < 8 && id ? (
+                            <HelperText type="error" visible={true} padding="none">
+                                아이디는 8자 이상으로 해주시기 바랍니다.
+                            </HelperText>
+                        ) : null}
                     </View>
                     <View style={{ marginBottom: 5 }}>
                         <TextInput
-                            style={{ flex: 1, borderWidth: 1, height: hp("5%") }}
+                            dense={true}
+                            style={{ flex: 1, backgroundColor: "white" }}
                             placeholder="비밀번호"
                             secureTextEntry={true}
                             value={password}
@@ -270,12 +280,15 @@ export default SignUp = ({ navigation }) => {
                             }}
                         />
                         {showPasswordText && (
-                            <Text>길이는 8자 이상 15자 이하이며{"\n"}영문, 숫자, 특수문자 중 2가지 이상을 혼합하여 입력해주세요</Text>
+                            <HelperText type="info" visible={true}>
+                                길이는 8자 이상 15자 이하이며{"\n"}영문, 숫자, 특수문자 중 2가지 이상을 혼합하여 입력해주세요
+                            </HelperText>
                         )}
                     </View>
                     <View style={{ marginBottom: 5 }}>
                         <TextInput
-                            style={{ flex: 1, borderWidth: 1, height: hp("5%") }}
+                            dense={true}
+                            style={{ flex: 1, backgroundColor: "white" }}
                             placeholder="비밀번호 확인"
                             secureTextEntry={true}
                             value={chkPassword}
@@ -287,13 +300,18 @@ export default SignUp = ({ navigation }) => {
                                 setShowCheckPasswordText(false);
                             }}
                         />
-                        {showCheckPasswordText && !checkPw ? <Text>비밀번호가 일치하지 않습니다.</Text> : null}
+                        {showCheckPasswordText && !checkPw ? (
+                            <HelperText type="error" visible={true}>
+                                비밀번호가 일치하지 않습니다.
+                            </HelperText>
+                        ) : null}
                     </View>
                     <View style={{ marginBottom: 5 }}>
                         <View style={{ marginBottom: 5, flexDirection: "row" }}>
                             <View style={{ flex: 8 }}>
                                 <TextInput
-                                    style={{ flex: 1, borderWidth: 1, height: hp("5%") }}
+                                    dense={true}
+                                    style={{ flex: 1, backgroundColor: "white" }}
                                     label="휴대폰 번호"
                                     placeholder="010-0000-0000"
                                     keyboardType="phone-pad"
@@ -309,18 +327,26 @@ export default SignUp = ({ navigation }) => {
                                 }}
                             >
                                 <Button
-                                    title="전송"
+                                    mode="contained"
+                                    style={{
+                                        flex: 1,
+                                        marginLeft: 6,
+                                        justifyContent: "center",
+                                    }}
                                     onPress={() => {
                                         Keyboard.dismiss();
                                         sendCode();
                                     }}
                                     disabled={phoneNumber.length === 0}
-                                />
+                                >
+                                    전송
+                                </Button>
                             </View>
                         </View>
                         <View>
                             <TextInput
-                                style={{ flex: 1, borderWidth: 1, height: hp("5%") }}
+                                dense={true}
+                                style={{ flex: 1, backgroundColor: "white" }}
                                 label="인증코드"
                                 placeholder="123456"
                                 keyboardType="phone-pad"
@@ -334,12 +360,16 @@ export default SignUp = ({ navigation }) => {
                                     }
                                 }}
                             />
-                            {verificationId !== "" && <Text>인증 문자가 전송되었습니다.</Text>}
+                            {verificationId !== "" && (
+                                <HelperText type="info" visible={true}>
+                                    인증 문자가 전송되었습니다.
+                                </HelperText>
+                            )}
                         </View>
                     </View>
                     <View>
                         <Button
-                            title="회원가입"
+                            mode="contained"
                             onPress={() => submit()}
                             loading={loading}
                             disabled={
@@ -354,7 +384,9 @@ export default SignUp = ({ navigation }) => {
                                 !verifyCode ||
                                 !verificationId
                             }
-                        />
+                        >
+                            회원가입
+                        </Button>
                     </View>
                     <View
                         style={{

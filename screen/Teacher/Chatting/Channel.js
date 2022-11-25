@@ -58,17 +58,15 @@ const Channel = ({ navigation, route: { params } }) => {
 
     const _handleMessageSend = async (messageList) => {
         const newMessage = messageList[0];
-        try {
-            //console.log('핸들메세지내부');
-            //console.log(params?.channelId);
-            //console.log(newMessage);
-            await createMessage({
-                channelId: params?.channelId,
-                message: newMessage,
+        await createMessage({ channelId: params?.channelId, message: newMessage })
+            .then(async () => {
+                await getDocs(query(collection(db, "users"), where("id", "==", params.inviteUser))).then(async (users) => {
+                    await pushNotificationsToPerson(auth.currentUser.displayName, users.docs[0].data().uid, "새로운 채팅", newMessage.text);
+                });
+            })
+            .catch((error) => {
+                Alert.alert("Send Message Error", error.message);
             });
-        } catch (e) {
-            Alert.alert("Send Message Error", e.message);
-        }
     };
     return (
         <View style={{ flex: 1, backgroundColor: style.colorList.skyBlue }}>

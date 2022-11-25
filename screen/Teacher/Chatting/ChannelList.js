@@ -21,6 +21,8 @@ const Item = React.memo(({ item, onPress }) => {
     const [displayName, setDisplayName] = useState("");
     const [displayPhotoUrl, setDisplayPhotoUrl] = useState("");
     const [otherUid, setOtherUid] = useState("");
+    const [lastTime, setLastTime] = useState("");
+    const [lastMessageText, setLastMessageText] = useState("");
     console.log("Item 안:       ", item);
     useEffect(() => {
         const unsubscribe = onSnapshot(doc(db, "channels", item), (doc) => {
@@ -32,11 +34,15 @@ const Item = React.memo(({ item, onPress }) => {
                 setDisplayName(doc.data().guestName);
                 setDisplayPhotoUrl(doc.data().guestPhotoUrl);
                 setOtherUid(doc.data().guestUid);
+                setLastTime(doc.data().lastMessageTime);
+                setLastMessageText(doc.data().lastMessageText);
             } else if (myUid_ === doc.data().guestUid) {
                 //host 정보를 띄워야 함
                 setDisplayName(doc.data().hostName);
                 setDisplayPhotoUrl(doc.data().hostPhotoUrl);
                 setOtherUid(doc.data().hostUid);
+                setLastTime(doc.data().lastMessageTime);
+                setLastMessageText(doc.data().lastMessageText);
             }
         });
         return () => unsubscribe();
@@ -50,18 +56,31 @@ const Item = React.memo(({ item, onPress }) => {
         >
             <View style={{ flex: 1, flexDirection: "row" }}>
                 <Image_ url={displayPhotoUrl} showButton={false} rounded={true} width_={60} height_={60}></Image_>
-                <Text
+                <View
                     style={{
-                        fontSize: 20,
-                        fontWeight: "600",
-                        marginVertical: 20,
+                        flex: 5,
+                        //backgroundColor: 'yellow',
+                        marginTop: 5,
+                        marginBottom: 3,
                         marginLeft: 20,
                     }}
                 >
-                    {displayName}
-                </Text>
+                    <Text
+                        style={{
+                            fontSize: 20,
+                            fontWeight: "600",
+                            marginBottom: 4,
+                        }}
+                    >
+                        {displayName}
+                    </Text>
+                    <Text style={{ fontSize: 16, color: style.colorList.black }}>
+                        {lastMessageText ? lastMessageText : "메세지 내용 없음"}
+                    </Text>
+                </View>
             </View>
-            <Text style={{ fontSize: 12, color: style.colorList.grey_1 }}>{getDateOrTime(item?.createdAt)}</Text>
+            <Text style={{ fontSize: 16, color: style.colorList.black }}>{lastTime ? getDateOrTime(lastTime) : "메세지가 없음"}</Text>
+
             <MaterialIcons name="keyboard-arrow-right" size={24} color={style.colorList.black}></MaterialIcons>
         </TouchableOpacity>
     );
@@ -183,7 +202,20 @@ const ChannelList = ({ navigation, route }) => {
                 }}
                 windowSize={3}
             ></FlatList>
-            <Button title="새 채팅방 만들기" isFilled={true} disabled={false} onPress={_handleCreateButtonPress}></Button>
+            <TouchableOpacity
+                style={{
+                    backgroundColor: style.colorList.navy,
+                    alignItems: "center",
+                    borderRadius: 10,
+                    width: style.size.width_ - 20,
+                    padding: 10,
+                    marginHorizontal: 10,
+                    marginBottom: 20,
+                }}
+                onPress={_handleCreateButtonPress}
+            >
+                <Text style={style.btnTitle}>새 채팅방 만들기</Text>
+            </TouchableOpacity>
         </View>
     );
 };

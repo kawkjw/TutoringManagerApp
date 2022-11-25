@@ -7,14 +7,14 @@ import Image_ from "../../../component/Image.js";
 
 const defaultPhotoUrl = "https://firebasestorage.googleapis.com/v0/b/crescendo-b984d.appspot.com/o/photo.png?alt=media";
 
-export default StudentProfile = ({ navigation, route }) => {
+export default TeacherProfile = ({ navigation, route }) => {
     console.log(route?.params);
     const teacherUid = route?.params?.teacherUid;
     const teacherName = route?.params?.teacherName;
 
     const teacherEducation = route?.params?.teacherEducation;
     const teacherMatchingInfo = route?.params?.teacherMatchingInfo;
-
+    const teacherAddress = route?.params?.teacherAddress;
     const teacherPhotoUrl = route?.params?.teacherPhotoUrl;
 
     return (
@@ -48,9 +48,10 @@ export default StudentProfile = ({ navigation, route }) => {
                     <View style={{ flex: 4, flexDirection: "column" }}>
                         <View style={{ flex: 1, justifyContent: "center" }}>
                             <Text>{teacherName}</Text>
-                        </View>
-                        <View style={{ flex: 1, justifyContent: "center" }}>
+
                             <Text>{teacherEducation}</Text>
+
+                            <Text>{teacherAddress}</Text>
                         </View>
                         <View style={{ flex: 1, justifyContent: "center", paddingRight: 5 }}>
                             <Button

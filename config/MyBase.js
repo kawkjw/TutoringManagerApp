@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, addDoc, collection, updateDoc, setDoc, doc } from "firebase/firestore";
+import { getFirestore, addDoc, collection, updateDoc, setDoc, doc, deleteDoc, getDocs, getDoc } from "firebase/firestore";
 import { getAuth, updateProfile } from "firebase/auth";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { API_KEY, AUTH_DOMAIN, PROJECT_ID, STORAGE_BUCKET, MESSAGING_ID, APP_ID, MEASUREMENT_ID } from "@env";
@@ -19,20 +19,79 @@ const myBase = initializeApp(firebaseConfig);
 export default myBase;
 export const db = getFirestore(myBase);
 export const auth = getAuth(myBase);
-export const storage = getStorage(myBase);
+export const storage = getStorage();
 
 export const createMessage = async ({ channelId, message }) => {
-    console.log("?????", message);
-    const messageRef = await setDoc(doc(db, `channels/${channelId}/messages/${message._id}`), {
+    console.log("?????", message.text);
+    const now = Date.now();
+    const messageRef = doc(db, "channels", channelId, "messages", message._id);
+    await setDoc(messageRef, {
         ...message,
-        createdAt: Date.now(),
+        createdAt: now,
     });
-    //console.log(messageRef);
+    await updateDoc(doc(db, "channels", channelId), {
+        lastMessageText: message.text,
+        lastMessageTime: now,
+    });
+
+    console.log(messageRef.id);
+};
+
+export const deleteSchedule = async (id, year_, month_, date_) => {
+    const userId = getCurrentUser().uid;
+    //console.log(id, year_, month_, date_, '\n스케줄을 삭제해야 함');
+    await deleteDoc(doc(db, `schedules/${userId}/${year_}/${month_}/${date_}`, id));
+};
+
+export const updateMatchingInfo = async (matchingId, matchingSubject) => {
+    //console.log('마이베이스 시작');
+    //console.log(matchingId);
+    const userId = getCurrentUser().uid;
+    const ref = doc(db, `users/${userId}/`);
+    //console.log(ref);
+    await updateDoc(ref, {
+        currentMatchingId: matchingId,
+        currentMatchingSubject: matchingSubject,
+    });
+};
+
+export const getMatchingInfo = () => {
+    console.log("마이베이스 getMatchingInfo");
+    const userId = getCurrentUser().uid;
+    const ref = doc(db, `users/${userId}/`);
+    const matchingInfoId = getDoc(ref, "currentMatchingId");
+    console.log(matchingInfoId);
+    return matchingInfoId;
+};
+
+export const uploadNewSchedule = async (scheduleName_, startHour_, startMinute_, endHour_, endMinute_, year_, month_, date_, userId) => {
+    //const userId = getCurrentUser().uid;
+    try {
+        //console.log(startHour_, startMinute_);
+        const newScheduleRef = await addDoc(collection(db, `schedules`, `${userId}`, `${year_}`, `${month_}`, `${date_}`), {
+            scheduleName: scheduleName_,
+            startHour: startHour_,
+            startMinute: startMinute_,
+            endHour: endHour_,
+            endMinute: endMinute_,
+            year: year_,
+            month: month_,
+            date: date_,
+        });
+        console.log(newScheduleRef);
+        console.log(newScheduleRef.id);
+        await updateDoc(newScheduleRef, {
+            id: newScheduleRef.id,
+        });
+        return newScheduleRef.id;
+    } catch (e) {
+        console.error("Error adding schedule: ", e);
+    }
 };
 
 export const uploadImage = async (uri) => {
     console.log("uri:", uri);
-    const user = auth.currentUser;
+    const user = await auth.currentUser;
     const ref_ = ref(storage, `/profile/${user.uid}/photo.png`);
     const metadata = {
         contentType: "image/png",
@@ -67,6 +126,10 @@ export const updateUserPhoto = async (photoUrl) => {
     await updateProfile(user, {
         photoURL: storageUrl,
     });
+
+    await updateDoc(doc(db, "users", user.uid), {
+        photoURL: storageUrl,
+    });
     console.log("리턴할 포토url");
     console.log(user.photoURL);
     return { name: user.displayName, email: user.email, photoUrl: user.photoURL };
@@ -74,6 +137,8 @@ export const updateUserPhoto = async (photoUrl) => {
 
 export const getCurrentUser = () => {
     const { uid, displayName, email, photoURL } = auth.currentUser;
+    //console.log(photoURL);
+    // 실제로 photoURL을 리턴하지만 앱에서는 photoUrl로 쓴다.
     return { uid, name: displayName, email, photoUrl: photoURL };
 };
 

@@ -6,4 +6,5 @@ const prefix = "https://firebasestorage.googleapis.com/v0/b/crescendo-b984d.apps
 export const images = {
     logo: `${prefix}/logo.png?alt=media`,
     photo: `${prefix}/photo.png?alt=media`,
+    defaultProfile: `${prefix}/defaultProfile.png?alt=media`,
 };

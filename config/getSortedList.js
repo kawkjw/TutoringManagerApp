@@ -23,16 +23,16 @@ const getMoneyScore = (tMoney, sMoney, weight, isTeacher) => {
         return score - 5;
     } else {
         console.log("학생 기준으로 계산");
-        const medianScore = weight / 2;
-        const rate = sMoney / 10;
-        const score = medianScore + ((tMoney - sMoney) * (weight / 20)) / rate;
+        const medianScore = weight / 2; // 50
+        const rate = sMoney / 10; // 6만8천
+        const score = medianScore - ((tMoney - sMoney) * (weight / 20)) / rate;
         return score;
     }
 };
 
 export const getSortedStudentList = (currentMatchingInfo, studentInfoList) => {
     console.log("==========         getSorted 함수 시작");
-    console.log(currentMatchingInfo);
+    //console.log(currentMatchingInfo);
     const subject = currentMatchingInfo?.subject;
     const dayBool = currentMatchingInfo?.dayBool;
     const dayTime = currentMatchingInfo?.dayTime;
@@ -44,20 +44,26 @@ export const getSortedStudentList = (currentMatchingInfo, studentInfoList) => {
     // {"checked": false, "level": "상위"}, {"checked": false, "level": "최상위"}]
     console.log(subject);
     console.log(dayBool);
-    console.log(studentInfoList); // 여기까지는 파라미터 확인
+    //console.log(studentInfoList); // 여기까지는 파라미터 확인
     console.log("과외비 웨이트:   ", currentMatchingInfo?.weight1);
+    console.log(currentMatchingInfo?.weight1 + currentMatchingInfo?.weight2);
+    const weight1 = Number(currentMatchingInfo?.weight1);
+    const weight2 = Number(currentMatchingInfo?.weight2);
+    const weight3 = Number(currentMatchingInfo?.weight3);
+    const weight4 = Number(currentMatchingInfo?.weight4);
+    const weight5 = Number(currentMatchingInfo?.weight5);
 
     // 학생마다 에듀케이션 레벨과 나의 에듀케이션 레벨을 비교해서 스코어를 비교해야 함.
     const studentList = studentInfoList.slice();
     for (let i = 0; i < studentList.length; i++) {
         console.log("===    for문 안의 " + i + "번째");
-        console.log(studentList[i]);
-        const levelScore = getLevelScore(educationLevel, studentList[i].education, currentMatchingInfo?.weight2);
+        //console.log(studentList[i]);
+        const levelScore = getLevelScore(educationLevel, studentList[i].education, weight5);
         const moneyScore = getMoneyScore(
             money,
             //100,
             studentList[i].matchingInfo.money,
-            currentMatchingInfo?.weight1,
+            weight1,
             true
         );
         studentList[i].score = levelScore + moneyScore;
@@ -65,7 +71,7 @@ export const getSortedStudentList = (currentMatchingInfo, studentInfoList) => {
 
     // 여기가 sort 부분
     console.log("before sort");
-    console.log(studentList);
+    //console.log(studentList);
 
     studentList.sort(function (studentA, studentB) {
         if (studentA.score > studentB.score) {
@@ -79,7 +85,7 @@ export const getSortedStudentList = (currentMatchingInfo, studentInfoList) => {
     });
 
     console.log("after sort");
-    console.log(studentList);
+    //console.log(studentList);
 
     //const sortedStudentInfoList = studentInfoList.slice().reverse();
     const sortedStudentInfoList = studentList;
@@ -102,8 +108,32 @@ export const getSortedTeacherList = (currentMatchingInfo, teacherInfoList) => {
     console.log(subject);
     console.log(dayBool);
     console.log(teacherInfoList); // 여기까지는 파라미터 확인
+    const weight1 = Number(currentMatchingInfo?.weight1);
+    const weight2 = Number(currentMatchingInfo?.weight2);
+    const weight3 = Number(currentMatchingInfo?.weight3);
+    const weight4 = Number(currentMatchingInfo?.weight4);
+    const weight5 = Number(currentMatchingInfo?.weight5);
 
-    const sortedTeacherInfoList = teacherInfoList.slice().reverse();
+    const teacherList = teacherInfoList.slice();
+    for (let i = 0; i < teacherList.length; i++) {
+        console.log("===    for문 안의 " + i + "번째");
+
+        const moneyScore = getMoneyScore(teacherList[i].matchingInfo.money, money, weight1, false);
+        teacherList[i].score = moneyScore;
+    }
+
+    teacherList.sort(function (teacherA, teacherB) {
+        if (teacherA.score > teacherB.score) {
+            return -1;
+        }
+        if (teacherA.score < teacherB.score) {
+            return 1;
+        }
+        // a must be equal to b
+        return 0;
+    });
+
+    const sortedTeacherInfoList = teacherList;
 
     console.log("getSorted 함수 끝         ============");
     return sortedTeacherInfoList;

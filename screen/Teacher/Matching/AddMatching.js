@@ -5,11 +5,16 @@ import { RadioButton, Button, Checkbox, TextInput } from "react-native-paper";
 import DropDownPicker from "react-native-dropdown-picker";
 import { addDoc, collection } from "firebase/firestore";
 import { auth, db } from "../../../config/MyBase";
+import style from "../../style.js";
 
 const AddMatchingStack = createNativeStackNavigator();
 
 const AddMatching = () => {
     const [selectFirst, setSelectFirst] = useState("default");
+    const [isGraduated, setIsGraduated] = useState("default");
+    //   const [teachingType, setTeachingType] = useState('default');
+    //let isGraduated = 'default';
+    //let teachingType = 'defualt';
     const [open, setOpen] = useState(false);
     const [selectSubject, setSelectSubject] = useState("");
     const [subjects, setSubjects] = useState([
@@ -17,11 +22,28 @@ const AddMatching = () => {
         { label: "수학", value: "수학" },
         { label: "영어", value: "영어" },
     ]);
-    const [elementaryChecked, setElementaryChecked] = useState(false);
+
+    const [elementaryChecked, setElementryChecked] = useState(false);
     const [middleChecked, setMiddleChecked] = useState(false);
     const [high1Checked, setHigh1Checked] = useState(false);
     const [high2Checked, setHigh2Checked] = useState(false);
     const [high3Checked, setHigh3Checked] = useState(false);
+
+    const [teachingType1, setTeachingType1] = useState(false);
+    const [teachingType2, setTeachingType2] = useState(false);
+    const [teachingType3, setTeachingType3] = useState(false);
+    const [teachingType4, setTeachingType4] = useState(false);
+    const [teachingType5, setTeachingType5] = useState(false);
+
+    const [levels, setLevels] = useState([
+        { level: "최하위", checked: false },
+        { level: "하위", checked: false },
+        { level: "중하위", checked: false },
+        { level: "중위", checked: false },
+        { level: "중상위", checked: false },
+        { level: "상위", checked: false },
+        { level: "최상위", checked: false },
+    ]);
 
     const FirstQuestion = ({ navigation, route }) => {
         return (
@@ -103,12 +125,12 @@ const AddMatching = () => {
                         <View>
                             <TouchableOpacity
                                 style={{ flexDirection: "row", alignItems: "center" }}
-                                onPress={() => setElementaryChecked(!elementaryChecked)}
+                                onPress={() => setElementryChecked(!elementaryChecked)}
                             >
                                 <Checkbox.Android
                                     status={elementaryChecked ? "checked" : "unchecked"}
                                     onPress={() => {
-                                        setElementaryChecked(!elementaryChecked);
+                                        setElementryChecked(!elementaryChecked);
                                     }}
                                 />
                                 <Text>초등학교</Text>
@@ -163,6 +185,7 @@ const AddMatching = () => {
                             </TouchableOpacity>
                         </View>
                     </View>
+                    <Text>////////////</Text>
                 </View>
                 <View style={{ flexDirection: "row", padding: 10 }}>
                     <Button icon="chevron-left" mode="outlined" onPress={() => navigation.goBack()}>
@@ -186,6 +209,243 @@ const AddMatching = () => {
     };
 
     const ThirdQuestion = ({ navigation, route }) => {
+        return (
+            <View>
+                <View>
+                    <Text>수업 방식</Text>
+                    <View>
+                        <TouchableOpacity
+                            style={{ flexDirection: "row", alignItems: "center" }}
+                            onPress={() => setTeachingType1(!teachingType1)}
+                        >
+                            <Checkbox.Android
+                                status={teachingType1 ? "checked" : "unchecked"}
+                                onPress={() => {
+                                    setTeachingType1(!teachingType1);
+                                }}
+                            />
+                            <Text>개념설명</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{ flexDirection: "row", alignItems: "center" }}
+                            onPress={() => setTeachingType2(!teachingType2)}
+                        >
+                            <Checkbox.Android
+                                status={teachingType2 ? "checked" : "unchecked"}
+                                onPress={() => {
+                                    setTeachingType2(!teachingType2);
+                                }}
+                            />
+                            <Text>문제풀이</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{ flexDirection: "row", alignItems: "center" }}
+                            onPress={() => setTeachingType3(!teachingType3)}
+                        >
+                            <Checkbox.Android
+                                status={teachingType3 ? "checked" : "unchecked"}
+                                onPress={() => {
+                                    setTeachingType3(!teachingType3);
+                                }}
+                            />
+                            <Text>심화 수업</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{ flexDirection: "row", alignItems: "center" }}
+                            onPress={() => setTeachingType4(!teachingType4)}
+                        >
+                            <Checkbox.Android
+                                status={teachingType4 ? "checked" : "unchecked"}
+                                onPress={() => {
+                                    setTeachingType4(!teachingType4);
+                                }}
+                            />
+                            <Text>내신 대비</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{ flexDirection: "row", alignItems: "center" }}
+                            onPress={() => setTeachingType5(!teachingType5)}
+                        >
+                            <Checkbox.Android
+                                status={teachingType5 ? "checked" : "unchecked"}
+                                onPress={() => {
+                                    setTeachingType5(!teachingType5);
+                                }}
+                            />
+                            <Text>수능 및 모의고사 대비</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                <Text>///////////////////</Text>
+                <View>
+                    <Text>학생수준</Text>
+                    <View>
+                        <TouchableOpacity
+                            style={{ flexDirection: "row", alignItems: "center" }}
+                            // onPress={(prev) => setLevels(...prev, {prev[0].checked:!prev[0].checked})}
+                            onPress={() => {
+                                const newLevels = levels.slice();
+                                newLevels[0].checked = !newLevels[0].checked;
+                                return setLevels(newLevels);
+                            }}
+                        >
+                            <Checkbox.Android
+                                status={levels[0].checked ? "checked" : "unchecked"}
+                                onPress={() => {
+                                    const newLevels = levels.slice();
+                                    newLevels[0].checked = !newLevels[0].checked;
+                                    return setLevels(newLevels);
+                                }}
+                            />
+                            <Text>최하위</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{ flexDirection: "row", alignItems: "center" }}
+                            // onPress={(prev) => setLevels(...prev, {prev[0].checked:!prev[0].checked})}
+                            onPress={() => {
+                                const newLevels = levels.slice();
+                                newLevels[1].checked = !newLevels[1].checked;
+                                return setLevels(newLevels);
+                            }}
+                        >
+                            <Checkbox.Android
+                                status={levels[1].checked ? "checked" : "unchecked"}
+                                onPress={() => {
+                                    const newLevels = levels.slice();
+                                    newLevels[1].checked = !newLevels[1].checked;
+                                    return setLevels(newLevels);
+                                }}
+                            />
+                            <Text>하위</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{ flexDirection: "row", alignItems: "center" }}
+                            // onPress={(prev) => setLevels(...prev, {prev[0].checked:!prev[0].checked})}
+                            onPress={() => {
+                                const newLevels = levels.slice();
+                                newLevels[2].checked = !newLevels[2].checked;
+                                return setLevels(newLevels);
+                            }}
+                        >
+                            <Checkbox.Android
+                                status={levels[2].checked ? "checked" : "unchecked"}
+                                onPress={() => {
+                                    const newLevels = levels.slice();
+                                    newLevels[2].checked = !newLevels[2].checked;
+                                    return setLevels(newLevels);
+                                }}
+                            />
+                            <Text>중하위</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{ flexDirection: "row", alignItems: "center" }}
+                            // onPress={(prev) => setLevels(...prev, {prev[0].checked:!prev[0].checked})}
+                            onPress={() => {
+                                const newLevels = levels.slice();
+                                newLevels[3].checked = !newLevels[3].checked;
+                                return setLevels(newLevels);
+                            }}
+                        >
+                            <Checkbox.Android
+                                status={levels[3].checked ? "checked" : "unchecked"}
+                                onPress={() => {
+                                    const newLevels = levels.slice();
+                                    newLevels[3].checked = !newLevels[3].checked;
+                                    return setLevels(newLevels);
+                                }}
+                            />
+                            <Text>중위</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{ flexDirection: "row", alignItems: "center" }}
+                            // onPress={(prev) => setLevels(...prev, {prev[0].checked:!prev[0].checked})}
+                            onPress={() => {
+                                const newLevels = levels.slice();
+                                newLevels[4].checked = !newLevels[4].checked;
+                                return setLevels(newLevels);
+                            }}
+                        >
+                            <Checkbox.Android
+                                status={levels[4].checked ? "checked" : "unchecked"}
+                                onPress={() => {
+                                    const newLevels = levels.slice();
+                                    newLevels[4].checked = !newLevels[4].checked;
+                                    return setLevels(newLevels);
+                                }}
+                            />
+                            <Text>중상위</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{ flexDirection: "row", alignItems: "center" }}
+                            // onPress={(prev) => setLevels(...prev, {prev[0].checked:!prev[0].checked})}
+                            onPress={() => {
+                                const newLevels = levels.slice();
+                                newLevels[5].checked = !newLevels[5].checked;
+                                return setLevels(newLevels);
+                            }}
+                        >
+                            <Checkbox.Android
+                                status={levels[5].checked ? "checked" : "unchecked"}
+                                onPress={() => {
+                                    const newLevels = levels.slice();
+                                    newLevels[5].checked = !newLevels[5].checked;
+                                    return setLevels(newLevels);
+                                }}
+                            />
+                            <Text>상위</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{ flexDirection: "row", alignItems: "center" }}
+                            // onPress={(prev) => setLevels(...prev, {prev[0].checked:!prev[0].checked})}
+                            onPress={() => {
+                                const newLevels = levels.slice();
+                                newLevels[6].checked = !newLevels[6].checked;
+                                return setLevels(newLevels);
+                            }}
+                        >
+                            <Checkbox.Android
+                                status={levels[6].checked ? "checked" : "unchecked"}
+                                onPress={() => {
+                                    const newLevels = levels.slice();
+                                    newLevels[6].checked = !newLevels[6].checked;
+                                    return setLevels(newLevels);
+                                }}
+                            />
+                            <Text>최상위</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                <View style={{ flexDirection: "row", padding: 10 }}>
+                    <Button icon="chevron-left" mode="outlined" onPress={() => navigation.goBack()}>
+                        Prev
+                    </Button>
+                    <View style={{ flex: 1 }} />
+                    <Button
+                        icon="chevron-right"
+                        mode="outlined"
+                        contentStyle={{ flexDirection: "row-reverse" }}
+                        onPress={() => navigation.navigate("fourthQ")}
+                        disabled={
+                            !(teachingType1 || teachingType2 || teachingType3 || teachingType4 || teachingType5) ||
+                            !(
+                                levels[0].checked ||
+                                levels[1].checked ||
+                                levels[2].checked ||
+                                levels[3].checked ||
+                                levels[4].checked ||
+                                levels[5].checked ||
+                                levels[6].checked
+                            )
+                        }
+                    >
+                        Next
+                    </Button>
+                </View>
+            </View>
+        );
+    };
+
+    const FourthQuestion = ({ navigation, route }) => {
         const [money, setMoney] = useState("");
         const list = ["월", "화", "수", "목", "금", "토", "일"];
         const [selectDay, setSelectDay] = useState([false, false, false, false, false, false, false]);
@@ -305,9 +565,11 @@ const AddMatching = () => {
                                 high1: high1Checked,
                                 high2: high2Checked,
                                 high3: high3Checked,
+                                teachingType: [teachingType1, teachingType2, teachingType3, teachingType4, teachingType5],
                                 money: Number(money),
                                 dayBool: selectDay,
                                 dayTime: dayTime,
+                                educationLevel: levels,
                             }).then(() => {
                                 navigation.getParent().reset({
                                     index: 1,
@@ -329,6 +591,7 @@ const AddMatching = () => {
             <AddMatchingStack.Screen options={{ headerShown: false }} name="firstQ" component={FirstQuestion} />
             <AddMatchingStack.Screen options={{ headerShown: false }} name="secondQ" component={SecondQuestion} />
             <AddMatchingStack.Screen options={{ headerShown: false }} name="thirdQ" component={ThirdQuestion} />
+            <AddMatchingStack.Screen options={{ headerShown: false }} name="fourthQ" component={FourthQuestion} />
         </AddMatchingStack.Navigator>
     );
 };

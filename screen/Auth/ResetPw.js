@@ -1,21 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-    TouchableOpacity,
-    Keyboard,
-    KeyboardAvoidingView,
-    Alert,
-    View,
-    Button,
-    TextInput,
-    Text,
-    SafeAreaView,
-    Platform,
-} from "react-native";
+import { TouchableOpacity, Keyboard, KeyboardAvoidingView, Alert, View, Text, SafeAreaView, Platform } from "react-native";
 import myBase, { db, auth } from "../../config/MyBase";
 import { doc, getDoc } from "firebase/firestore";
 import { PhoneAuthProvider, updatePassword, signInWithCredential } from "firebase/auth";
 import { FirebaseRecaptchaVerifierModal, FirebaseRecaptchaBanner } from "expo-firebase-recaptcha";
 import Modal from "react-native-modal";
+import { Button, TextInput } from "react-native-paper";
+import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 export default ResetPw = ({ navigation }) => {
     const appVerifier = useRef(null);
@@ -159,7 +150,7 @@ export default ResetPw = ({ navigation }) => {
                 <KeyboardAvoidingView
                     style={{
                         paddingHorizontal: 20,
-                        height: "90%",
+                        height: hp("90%"),
                         alignSelf: "stretch",
                         justifyContent: "center",
                     }}
@@ -171,7 +162,8 @@ export default ResetPw = ({ navigation }) => {
                         <View style={{ marginBottom: 5, flexDirection: "row" }}>
                             <View style={{ flex: 8 }}>
                                 <TextInput
-                                    style={{ borderWidth: 1, height: 40 }}
+                                    dense={true}
+                                    style={{ backgroundColor: "white" }}
                                     placeholder="010-0000-0000"
                                     keyboardType="phone-pad"
                                     maxLength={13}
@@ -181,19 +173,21 @@ export default ResetPw = ({ navigation }) => {
                             </View>
                             <View style={{ flex: 3, alignItems: "center", justifyContent: "center" }}>
                                 <Button
-                                    title="전송"
                                     style={{ flex: 1 }}
                                     onPress={() => {
                                         Keyboard.dismiss();
                                         sendCode();
                                     }}
                                     disabled={phoneNumber.length === 0}
-                                />
+                                >
+                                    전송
+                                </Button>
                             </View>
                         </View>
                         <View>
                             <TextInput
-                                style={{ borderWidth: 1, height: 40 }}
+                                dense={true}
+                                style={{ backgroundColor: "white" }}
                                 placeholder="123456"
                                 keyboardType="phone-pad"
                                 maxLength={6}
@@ -210,7 +204,9 @@ export default ResetPw = ({ navigation }) => {
                         </View>
                     </View>
                     <View>
-                        <Button title="확인" disabled={!verificationId && !verifyCode} onPress={submitForVerify} />
+                        <Button disabled={!verificationId && !verifyCode} onPress={submitForVerify}>
+                            확인
+                        </Button>
                     </View>
                     <View
                         style={{
@@ -250,7 +246,8 @@ export default ResetPw = ({ navigation }) => {
                             </Text>
                             <View style={{ marginBottom: 5 }}>
                                 <TextInput
-                                    style={{ borderWidth: 1, height: 40 }}
+                                    dense={true}
+                                    style={{ backgroundColor: "white" }}
                                     secureTextEntry={true}
                                     value={password}
                                     onChangeText={setPassword}
@@ -270,7 +267,8 @@ export default ResetPw = ({ navigation }) => {
                             </View>
                             <View style={{ marginBottom: 5 }}>
                                 <TextInput
-                                    style={{ borderWidth: 1, height: 40 }}
+                                    dense={true}
+                                    style={{ backgroundColor: "white" }}
                                     secureTextEntry={true}
                                     value={chkPassword}
                                     onChangeText={setChkPassword}
@@ -284,7 +282,9 @@ export default ResetPw = ({ navigation }) => {
                                 />
                                 {showCheckPasswordText && !checkPw ? <Text>비밀번호가 일치하지 않습니다.</Text> : null}
                             </View>
-                            <Button title="확인" disabled={!password || !chkPassword || !checkPw || !correctPw} onPress={submitForUpdate} />
+                            <Button disabled={!password || !chkPassword || !checkPw || !correctPw} onPress={submitForUpdate}>
+                                확인
+                            </Button>
                         </View>
                     </TouchableOpacity>
                 </View>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, ScrollView, TouchableOpacity, Text, FlatList, TextInput } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { getCurrentUser, getMatchingInfo, db } from "../../../config/MyBase.js";
-import { collection, doc, onSnapshot, query, where } from "firebase/firestore";
+import { collection, doc, onSnapshot, query, where, getDoc, updateDoc } from "firebase/firestore";
 import { getSortedTeacherList } from "../../../config/getSortedList.js";
 import style from "../../style.js";
 import Image_ from "../../../component/Image.js";
@@ -20,6 +20,7 @@ export default MatchingHome = ({ navigation, route }) => {
     //const [currentMatchingInfo, setCurrentMatchingInfo] = useState('default');
     const userId = getCurrentUser().uid;
     //const currentMatchingInfo = '';
+
     const [currentMatchingInfo, setCurrentMatchingInfo] = useState("");
     const [dayBool, setDayBool] = useState([]);
     const [dayTime, setDayTime] = useState([]);
@@ -27,9 +28,9 @@ export default MatchingHome = ({ navigation, route }) => {
     const [money, setMoney] = useState(-1);
     const [teachingType, setTeachingType] = useState([]);
     const [educationLevel, setEducationLevel] = useState([]);
-    const [studentList, setStudentList] = useState([]);
     const [teacherInfoList, setTeacherInfoList] = useState([]);
     const [isSub3Finished, setIsSub3Finished] = useState(false);
+    const [isSub4Finished, setIsSub4Finished] = useState(false);
     const [weight1, setWeight1] = useState("20");
     const [weight2, setWeight2] = useState("20");
     const [weight3, setWeight3] = useState("20");
@@ -66,23 +67,7 @@ export default MatchingHome = ({ navigation, route }) => {
     useEffect(() => {
         let unsub3 = () => {};
         if (currentMatchingInfo === "") {
-            const q = query(collection(db, "users"), where("isTeacher", "==", true)),
-                unsub3 = onSnapshot(q, (querySnapshot) => {
-                    const teacherInfo = [];
-                    querySnapshot.forEach((doc) => {
-                        const teacherObj = {
-                            uid: doc.data().uid,
-                            name: doc.data().name,
-                            photoUrl: doc.data().photoURL,
-                            education: doc.data().education,
-                            address: doc.data().address,
-                            teacherCurrentMatchingId: doc.data().currentMatchingId,
-                            teacherCurrentMatchingSubject: doc.data().currentMatchingSubject,
-                        };
-                        teacherInfo.push(teacherObj);
-                    });
-                    setTeacherInfoList(teacherInfo);
-                });
+            return;
         } else if (currentMatchingInfo !== "") {
             setIsSub3Finished(false);
             const q = query(collection(db, "users"), where("isTeacher", "==", true), where("currentMatchingSubject", "==", subject));
@@ -110,33 +95,57 @@ export default MatchingHome = ({ navigation, route }) => {
             });
         }
         return () => unsub3();
-    }, []);
+    }, [currentMatchingInfo, subject]);
 
     useEffect(() => {
         if (!isSub3Finished) {
             return;
         }
-
         let unsub4 = () => {};
-        console.log("여기?");
+        console.log("unsub4");
         const teacherInfoList_ = teacherInfoList.slice();
-        for (let i = 0; i < teacherInfoList_?.length; i++) {
-            const uid_ = teacherInfoList_[i].uid;
-            const matchingId_ = teacherInfoList_[i].teacherCurrentMatchingId;
-            const name_ = teacherInfoList_[i].name;
-            //console.log(i, '   ', uid_, '   ', matchingId_, '   ', name_);
-            unsub4 = onSnapshot(doc(db, "users", uid_, "matching", matchingId_), (doc) => {
-                console.log("for문 안의 unsub4      ", i);
-                console.log(doc.data());
-                teacherInfoList_[i].matchingInfo = doc.data();
-                setTeacherInfoList(teacherInfoList_);
-            });
+        teacherInfoList_.forEach(async (teacherItem, index) => {
+            // if (index === 0) {
+            //   setIsSub4Finished(false);
+            // }
+
+            //console.log(teacherItem?.name);
+            const docSnap = await getDoc(doc(db, "users", teacherItem?.uid, "matching", teacherItem?.teacherCurrentMatchingId));
+
+            console.log("docSnap안의 데이터:    ", docSnap.data());
+            teacherItem.matchingInfo = docSnap.data();
+            // teacherInfoList_[index].matchingInfo = docSnap.data();
+
+            if (index + 1 === teacherInfoList_.length) {
+                setIsSub4Finished(true);
+            }
+        });
+
+        if (isSub4Finished) {
+            console.log(teacherInfoList_);
+            setTeacherInfoList(teacherInfoList_);
         }
 
-        return () => unsub4();
-    }, [isSub3Finished]);
+        // for (let i = 0; i < teacherInfoList_?.length; i++) {
+        //   const uid_ = teacherInfoList_[i].uid;
+        //   const matchingId_ = teacherInfoList_[i].teacherCurrentMatchingId;
+        //   const name_ = teacherInfoList_[i].name;
+        //   //console.log(i, '   ', uid_, '   ', matchingId_, '   ', name_);
+        //   unsub4 = onSnapshot(
+        //     doc(db, 'users', uid_, 'matching', matchingId_),
+        //     (doc) => {
+        //       console.log('for문 안의 unsub4      ', i);
+        //       console.log(doc.data());
+        //       teacherInfoList_[i].matchingInfo = doc.data();
+        //       setTeacherInfoList(teacherInfoList_);
+        //     }
+        //   );
+        // }
 
-    const sortTeacherList = () => {
+        return () => unsub4();
+    }, [isSub3Finished, isSub4Finished]);
+
+    const sortTeacherList = async () => {
         console.log("선생님을 추천해줘야함");
         if (currentMatchingInfo === "default") {
             console.log("디폴트");
@@ -148,6 +157,9 @@ export default MatchingHome = ({ navigation, route }) => {
                 { title: "weight4", value: weight4 },
                 { title: "weight5", value: weight5 },
             ];
+            await updateDoc(doc(db, "users", userId), {
+                lastWeight: weightList,
+            });
             const sortedTeacherInfoList = getSortedTeacherList(
                 {
                     subject,
@@ -175,6 +187,21 @@ export default MatchingHome = ({ navigation, route }) => {
         navigation.navigate("TeacherProfile", params);
     };
 
+    const getMyWeight = async () => {
+        console.log("나의 비율을 불러줘야함");
+        const docSnap = await getDoc(doc(db, "users", userId));
+        console.log(docSnap.data().lastWeight);
+        const weightList = docSnap.data().lastWeight;
+        console.log(weightList[0].value);
+        console.log(weightList[1].value);
+        console.log(weightList[2].value);
+        setWeight1(weightList[0].value);
+        setWeight2(weightList[1].value);
+        setWeight3(weightList[2].value);
+        setWeight4(weightList[3].value);
+        setWeight5(weightList[4].value);
+    };
+
     //console.log('render MatchingHome:', studentList);
 
     const getTeachingTypeString = (teachingType) => {
@@ -198,6 +225,7 @@ export default MatchingHome = ({ navigation, route }) => {
     };
 
     const Item = ({ item, onPress }) => {
+        console.log("과외비:    ", item?.matchingInfo?.money);
         console.log(item);
         return (
             <TouchableOpacity
@@ -205,12 +233,11 @@ export default MatchingHome = ({ navigation, route }) => {
                 onPress={() => {
                     onPress({
                         teacherUid: item?.uid,
-
                         teacherName: item?.name,
                         teacherMatchingInfo: item?.matchingInfo,
                         teacherPhotoUrl: item?.photoUrl,
-
                         teacherEducation: item?.education,
+                        teacherAddress: item?.address,
                     });
                 }}
             >
@@ -269,12 +296,23 @@ export default MatchingHome = ({ navigation, route }) => {
                         >
                             과외비 월 {item?.matchingInfo?.money / 10000}만원
                         </Text>
+                        <Text
+                            style={{
+                                fontSize: 16,
+                            }}
+                        >
+                            {item?.address}
+                        </Text>
                     </View>
                 </View>
             </TouchableOpacity>
         );
     };
-    //console.log(teachingType);
+    // console.log(
+    //   '        =======teacherInfo',
+    //   teacherInfoList,
+    //   '    ============='
+    // );
     return (
         <View
             style={{
@@ -596,7 +634,7 @@ export default MatchingHome = ({ navigation, route }) => {
                                     color: style.colorList.navy,
                                 }}
                             >
-                                성적
+                                학력
                             </Text>
                         </View>
                         <View
@@ -638,7 +676,7 @@ export default MatchingHome = ({ navigation, route }) => {
                     }}
                 >
                     <TouchableOpacity
-                        //onPress={getMyWeight}
+                        onPress={getMyWeight}
                         style={{
                             width: 160,
                             height: 40,

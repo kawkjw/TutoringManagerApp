@@ -1,15 +1,30 @@
-import React, { useContext } from "react";
-import { Button, Text, View, TextInput } from "react-native";
-import { AuthContext } from "../Auth";
+import React from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import MyPageHome from "./MyPage/MyPageHome";
+import EditProfile from "./MyPage/EditProfile";
 
-function MyPageScreen({ navigation, route }) {
-    const { signOut } = useContext(AuthContext);
+//import DailyRecord from './MyPage/DailyRecord';
+//import AddMatching from './Matching/AddMatching';
+
+const MyPageStack = createNativeStackNavigator();
+
+const MyPageStackScreen = ({ navigation, route }) => {
     return (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-            <Text>마이페이지</Text>
-            <Button title="로그아웃" onPress={signOut} />
-        </View>
+        <MyPageStack.Navigator>
+            <MyPageStack.Screen options={{ title: "마이페이지" }} name="MyPageHome" component={MyPageHome} />
+            <MyPageStack.Screen options={{ title: "기본 프로필 수정" }} name="EditProfile" component={EditProfile} />
+            {/* <MyPageStack.Screen
+        options={{ title: '수업 일지 목록' }}
+        name='DailyRecordList'
+        component={DailyRecordList}
+      />
+      <MyPageStack.Screen
+        options={{ title: '수업 일지' }}
+        name='DailyRecord'
+        component={DailyRecord}
+      /> */}
+        </MyPageStack.Navigator>
     );
-}
+};
 
-export default MyPageScreen;
+export default MyPageStackScreen;
