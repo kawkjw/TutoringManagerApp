@@ -12,7 +12,7 @@ import {
     updatePhoneNumber,
     updateProfile,
 } from "firebase/auth";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc, arrayRemove } from "firebase/firestore";
 import AuthSuccess from "./AuthSuccess";
 import SignIn from "./Auth/SignIn";
 import SignUp from "./Auth/SignUp";
@@ -112,8 +112,10 @@ export default Auth = () => {
                     });
             },
             signOut: async () => {
+                const token = await AsyncStorage.getItem("notificationToken");
+                await updateDoc(doc(db, "users", auth.currentUser.uid), { expoTokens: arrayRemove(token) });
                 signOut(auth);
-                await AsyncStorage.removeItem("userToken");
+                await AsyncStorage.multiRemove(["userToken", "notificationToken"]);
                 dispatch({ type: "SIGN_OUT" });
             },
             signUp: async (data) => {
