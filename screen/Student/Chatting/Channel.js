@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useLayoutEffect } from "react";
-import { Text, View, FlatList, Alert } from "react-native";
+import { Text, View, FlatList, Alert, TextInput } from "react-native";
+import Image_ from "../../../component/Image.js";
 import style from "../../style.js";
 import { getCurrentUser, db, createMessage, auth } from "../../../config/MyBase.js";
-
 import { collection, getDocs, orderBy, query, onSnapshot, where } from "firebase/firestore";
 import { GiftedChat, Send } from "react-native-gifted-chat";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -27,12 +27,17 @@ const SendButton = (props) => {
 };
 
 const Channel = ({ navigation, route: { params } }) => {
+    //console.log('채널 안');
+    //console.log(params);
+    // {"channelId": "JM9GLE7QwHwjD8aVJQsu", "displayName": "선생3",
+    // "displayPhotoUrl": "https://firebasestorage.googleapis.com/v0/b/crescendo-b984d.appspot.com/o/profile%2FWkjsWVFc59hz9lpwi7szwv6FCrr1%2Fphoto.png?alt=media&token=9dfc2balt=media&token=9dfc2b07-1f7f-44ac-83e4-a425ca118b2a",
+    // "otherUid": "WkjsWVFc59hz9lpwi7szwv6FCrr1"}
     const { uid, name, photoUrl } = getCurrentUser();
     const [messages, setMessages] = useState([]);
     const [text, setText] = useState([]);
 
     useEffect(() => {
-        const messageRef = collection(db, "channels", params?.id, "messages");
+        const messageRef = collection(db, "channels", params?.channelId, "messages");
         //console.log('메세지ref 정보:     ', messageRef);
 
         const messageQuery = query(messageRef, orderBy("createdAt", "desc"));
@@ -48,24 +53,23 @@ const Channel = ({ navigation, route: { params } }) => {
     }, []);
 
     useLayoutEffect(() => {
-        navigation.setOptions({ headerTitle: params.inviteUser || "Channel" });
+        navigation.setOptions({ headerTitle: params?.displayName || "Channel" });
     }, []);
 
     const _handleMessageSend = async (messageList) => {
         const newMessage = messageList[0];
-        await createMessage({ channelId: params.id, message: newMessage })
-            .then(async () => {
-                await getDocs(query(collection(db, "users"), where("id", "==", params.inviteUser))).then(async (users) => {
-                    await pushNotificationsToPerson(auth.currentUser.displayName, users.docs[0].data().uid, "새로운 채팅", newMessage.text);
-                });
-            })
-            .catch((error) => {
-                Alert.alert("Send Message Error", error.message);
+        try {
+            //console.log('핸들메세지내부');
+            //console.log(params?.channelId);
+            //console.log(newMessage);
+            await createMessage({
+                channelId: params?.channelId,
+                message: newMessage,
             });
+        } catch (e) {
+            Alert.alert("Send Message Error", e.message);
+        }
     };
-    console.log("초대한 사람의 uid, name:     ", uid, name);
-    console.log("초대할 사람의 id  (params(inviteUser)):    ", params);
-
     return (
         <View style={{ flex: 1, backgroundColor: style.colorList.skyBlue }}>
             <GiftedChat
@@ -74,7 +78,7 @@ const Channel = ({ navigation, route: { params } }) => {
                 }}
                 placeholder="Enter a message..."
                 messages={messages}
-                user={{ _id: uid, name: name, avatar: photoUrl }}
+                user={{ _id: uid, name, avatar: photoUrl }}
                 onSend={_handleMessageSend}
                 alwaysShowSend={true}
                 textInputProps={{
