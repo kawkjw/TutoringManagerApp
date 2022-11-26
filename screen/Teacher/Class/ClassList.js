@@ -123,7 +123,7 @@ export default ClassList = ({ navigation, route }) => {
                                         </View>
                                         <Text style={{ marginTop: 8 }}>{c.dayString}</Text>
                                         {c.studentAccept ? (
-                                            <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
+                                            <View style={{ flexDirection: "row", alignItems: "center" }}>
                                                 {c.memo.length === 0 ? (
                                                     <Text style={{ marginTop: 8 }}>메모 없음</Text>
                                                 ) : (
@@ -132,9 +132,9 @@ export default ClassList = ({ navigation, route }) => {
                                                 <TouchableOpacity onPress={() => navigation.navigate("ViewMemo", { classData: c })}>
                                                     <MaterialCommunityIcons
                                                         name="pencil-box-outline"
-                                                        size={19}
+                                                        size={25}
                                                         color="black"
-                                                        style={{ marginLeft: 3 }}
+                                                        style={{ marginLeft: 3, marginTop: 5 }}
                                                     />
                                                 </TouchableOpacity>
                                             </View>

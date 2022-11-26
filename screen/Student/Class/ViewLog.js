@@ -55,7 +55,7 @@ export default ViewLog = ({ navigation, route }) => {
                 >
                     <View style={{ flex: 1 }}>
                         <View style={{ width: wp("70%") }}>
-                            <Text style={{ marginBottom: 5, fontSize: 15 }}>{bookName}</Text>
+                            <Text style={{ marginBottom: 5, fontSize: 20 }}>{bookName}</Text>
                             <View style={{ width: wp("50%") }}>
                                 <ProgressBar
                                     progress={Number(progress) / 100}

@@ -5,6 +5,7 @@ import { View, TouchableOpacity, Text, Keyboard, Alert } from "react-native";
 import { db, auth, getCurrentUser, updateUserPhoto } from "../../../config/MyBase";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import Image_ from "../../../component/Image.js";
+import { updateProfile } from "firebase/auth";
 
 const EditProfile = ({ navigation, route }) => {
     const [name, setName] = useState("");
@@ -44,6 +45,7 @@ const EditProfile = ({ navigation, route }) => {
     const changeName = async () => {
         console.log(name);
         await updateDoc(doc(db, "users", auth.currentUser.uid), { name: name });
+        await updateProfile(auth.currentUser, { displayName: name });
     };
     const changeAddress = async () => {
         console.log(address);

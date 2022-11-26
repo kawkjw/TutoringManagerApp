@@ -57,6 +57,7 @@ const EditProfile = ({ navigation, route }) => {
     const changeName = async () => {
         console.log(name);
         await updateDoc(doc(db, "users", auth.currentUser.uid), { name: name });
+        await updateProfile(auth.currentUser, { displayName: name });
     };
 
     const changeAddress = async () => {

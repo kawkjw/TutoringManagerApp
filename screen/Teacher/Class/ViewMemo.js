@@ -90,7 +90,7 @@ export default ViewMemo = ({ navigation, route }) => {
                             alignItems: "center",
                             justifyContent: "center",
                             width: wp("70%"),
-                            height: hp("30%"),
+                            height: hp("35%"),
                             backgroundColor: "white",
                             padding: 10,
                         }}
@@ -103,7 +103,8 @@ export default ViewMemo = ({ navigation, route }) => {
                                 multiline={true}
                                 value={memoText}
                                 onChangeText={setMemoText}
-                                style={{ width: wp("60%"), height: hp("10%") }}
+                                style={{ width: wp("60%"), height: hp("20%") }}
+                                label="메모"
                             />
                         </View>
                         {isNew ? (
