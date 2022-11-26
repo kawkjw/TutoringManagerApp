@@ -30,6 +30,20 @@ const getMoneyScore = (tMoney, sMoney, weight, isTeacher) => {
     }
 };
 
+const getTeachingTypeScore = (tTeachingType, sTeachingType, weight) => {
+    console.log("겟티칭타입스코어");
+    console.log(tTeachingType); // [true, true, false, false, false]
+    console.log(sTeachingType); // [false, false, true, false, false]
+    console.log(weight); // 10
+    let rate = 0;
+    for (let i = 0; i < tTeachingType.length; i++) {
+        if (tTeachingType[i] === true && sTeachingType[i] === true) {
+            rate++;
+        }
+    }
+    return weight * (rate / 5);
+};
+
 export const getSortedStudentList = (currentMatchingInfo, studentInfoList) => {
     console.log("==========         getSorted 함수 시작");
     //console.log(currentMatchingInfo);
@@ -57,7 +71,7 @@ export const getSortedStudentList = (currentMatchingInfo, studentInfoList) => {
     const studentList = studentInfoList.slice();
     for (let i = 0; i < studentList.length; i++) {
         console.log("===    for문 안의 " + i + "번째");
-        //console.log(studentList[i]);
+        console.log(studentList[i]);
         const levelScore = getLevelScore(educationLevel, studentList[i].education, weight5);
         const moneyScore = getMoneyScore(
             money,
@@ -66,7 +80,8 @@ export const getSortedStudentList = (currentMatchingInfo, studentInfoList) => {
             weight1,
             true
         );
-        studentList[i].score = levelScore + moneyScore;
+        const teachingTypeScore = getTeachingTypeScore(teachingType, studentList[i].matchingInfo.teachingType, weight3);
+        studentList[i].score = levelScore + moneyScore + teachingTypeScore;
     }
 
     // 여기가 sort 부분

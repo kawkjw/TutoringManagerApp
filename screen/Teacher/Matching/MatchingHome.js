@@ -148,6 +148,26 @@ export default MatchingHome = ({ navigation, route }) => {
         return () => unsub4();
     }, [isSub3Finished, isSub4Finished]);
 
+    const getTeachingTypeString = () => {
+        let teachingTypeString = "";
+        if (teachingType[0] === true) {
+            teachingTypeString += "개념설명 ";
+        }
+        if (teachingType[1] === true) {
+            teachingTypeString += "문제풀이 ";
+        }
+        if (teachingType[2] === true) {
+            teachingTypeString += "심화수업 ";
+        }
+        if (teachingType[3] === true) {
+            teachingTypeString += "내신 대비 ";
+        }
+        if (teachingType[4] === true) {
+            teachingTypeString += "수능 및 모의고사 대비 ";
+        }
+        return teachingTypeString;
+    };
+
     const getMatchingGradeString = () => {
         let gradeString = "";
         if (currentMatchingInfoId) {
@@ -462,7 +482,7 @@ export default MatchingHome = ({ navigation, route }) => {
                 style={{
                     //flex: 1.5,
                     flexDirection: "row",
-                    height: 65,
+                    height: 88,
                 }}
             >
                 <View
@@ -491,6 +511,7 @@ export default MatchingHome = ({ navigation, route }) => {
                             }
                         })}
                     </Text>
+                    <Text style={{ fontSize: 18, color: style.colorList.navy }}>수업방식 : {getTeachingTypeString()}</Text>
                 </View>
                 <View
                     style={{
