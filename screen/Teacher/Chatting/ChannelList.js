@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, Platform, StatusBar } from "react-native";
 import Button from "../../../component/Button.js";
 import Image_ from "../../../component/Image.js";
 import style from "../../style.js";
@@ -9,6 +9,7 @@ import moment from "moment";
 import { db, auth } from "../../../config/MyBase.js";
 import { collection, query, orderBy, onSnapshot, doc, getDoc, getDocs, where, addDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import { MaterialIcons } from "@expo/vector-icons";
+import { pushNotificationsToPerson } from "../../../config/MyExpo.js";
 import { useIsFocused } from "@react-navigation/native";
 
 const getDateOrTime = (ts) => {
@@ -49,7 +50,7 @@ const Item = React.memo(({ item, onPress }) => {
     }, []);
     return (
         <TouchableOpacity
-            style={style.itemContainer}
+            style={{ ...style.itemContainer, backgroundColor: "white" }}
             onPress={() => {
                 onPress({ otherUid, displayName, displayPhotoUrl, channelId: item });
             }}
@@ -103,7 +104,9 @@ const ChannelList = ({ navigation, route }) => {
     useEffect(() => {
         const unsubscribe = onSnapshot(doc(db, "users", myUid), (doc) => {
             //console.log(doc.data().myChannels);
-            setChannels(doc.data().myChannels);
+            const channels = doc.data().myChannels;
+
+            setChannels(channels);
         });
         return () => unsubscribe();
     }, []);
@@ -189,8 +192,10 @@ const ChannelList = ({ navigation, route }) => {
     }, [isFocused]);
 
     return (
-        <View style={style.container}>
+        <View style={{ ...style.container, padding: 15 }}>
+            <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "default"} />
             <FlatList
+                style={{ borderRadius: 20 }}
                 keyExtractor={(item) => {
                     //console.log('키 익스트래터    ', item);
                     return item;
@@ -207,10 +212,10 @@ const ChannelList = ({ navigation, route }) => {
                     backgroundColor: style.colorList.navy,
                     alignItems: "center",
                     borderRadius: 10,
-                    width: style.size.width_ - 20,
+                    //width: style.size.width_ - 20,
                     padding: 10,
                     marginHorizontal: 10,
-                    marginBottom: 20,
+                    marginBottom: 5,
                 }}
                 onPress={_handleCreateButtonPress}
             >

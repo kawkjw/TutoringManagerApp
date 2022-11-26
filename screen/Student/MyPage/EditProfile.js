@@ -26,6 +26,7 @@ const EditProfile = ({ navigation, route }) => {
         { label: "최상위", value: "최상위" },
     ]);
     const [photoUrl, setPhotoUrl] = useState(user.photoUrl);
+    const defaultPhotoUrl = "https://firebasestorage.googleapis.com/v0/b/crescendo-b984d.appspot.com/o/todayProfile.png?alt=media";
 
     const _handlePhotoChange = async (url) => {
         console.log("핸들 포토 체인지");
@@ -85,7 +86,7 @@ const EditProfile = ({ navigation, route }) => {
     };
 
     return (
-        <View style={{ flex: 1, alignItems: "center" }}>
+        <View style={{ flex: 1, alignItems: "center", backgroundColor: "#e6f7ff" }}>
             <TouchableOpacity onPress={() => Keyboard.dismiss()} activeOpacity={1}>
                 <Surface
                     style={{
@@ -105,7 +106,7 @@ const EditProfile = ({ navigation, route }) => {
                         }}
                     >
                         <Image_
-                            url={photoUrl}
+                            url={photoUrl ? photoUrl : defaultPhotoUrl}
                             onChangeImage={_handlePhotoChange}
                             showButton={true}
                             rounded={true}

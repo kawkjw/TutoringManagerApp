@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, ScrollView, TouchableOpacity, Text, RefreshControl, StatusBar } from "react-native";
+import { View, ScrollView, TouchableOpacity, Text, RefreshControl, StatusBar, Platform } from "react-native";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Surface } from "react-native-paper";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { auth, db } from "../../../config/MyBase";
 import { doc, getDoc } from "firebase/firestore";
 import { useIsFocused } from "@react-navigation/native";
+import style from "../../style";
 
 export default ClassList = ({ navigation, route }) => {
     const [loading, setLoading] = useState(true);
@@ -59,9 +60,15 @@ export default ClassList = ({ navigation, route }) => {
     }, []);
 
     return (
-        <View style={{ flex: 1, alignItems: "center" }}>
-            <StatusBar barStyle={"dark-content"} />
-            <View style={{ flex: 10, alignSelf: "stretch" }}>
+        <View
+            style={{
+                flex: 1,
+                alignItems: "center",
+                backgroundColor: style.colorList.skyBlue,
+            }}
+        >
+            <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "default"} />
+            <View style={{ flex: 10, alignSelf: "stretch", paddingVertical: 15 }}>
                 <ScrollView
                     style={{ flex: 1, alignSelf: "stretch" }}
                     contentContainerStyle={{ alignItems: "center" }}
@@ -69,7 +76,13 @@ export default ClassList = ({ navigation, route }) => {
                     refreshControl={<RefreshControl refreshing={loading} onRefresh={onRefresh} />}
                 >
                     {loading ? (
-                        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+                        <View
+                            style={{
+                                flex: 1,
+                                alignItems: "center",
+                                justifyContent: "center",
+                            }}
+                        >
                             <Text>Loading...</Text>
                         </View>
                     ) : (
@@ -77,21 +90,36 @@ export default ClassList = ({ navigation, route }) => {
                             {myClass.map((c, index) => (
                                 <TouchableOpacity
                                     key={index}
-                                    style={{ marginVertical: 5 }}
+                                    style={{ marginVertical: 10 }}
                                     onPress={() => navigation.navigate("ViewClass", { classData: c })}
                                 >
                                     <Surface
                                         style={{
                                             width: wp("90%"),
                                             height: hp("15%"),
-                                            paddingHorizontal: 10,
+                                            paddingHorizontal: 15,
                                             justifyContent: "center",
                                             backgroundColor: c.studentAccept ? "white" : "#ff4d4d",
+                                            marginBottom: 10,
+                                            borderRadius: 15,
                                         }}
                                     >
-                                        <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
+                                        <View
+                                            style={{
+                                                flexDirection: "row",
+                                                alignItems: "flex-end",
+                                            }}
+                                        >
                                             <Text style={{ fontWeight: "bold", fontSize: 20 }}>{c.className}</Text>
-                                            <Text style={{ marginLeft: 10 }}>{c.studentName} 학생</Text>
+                                            <Text
+                                                style={{
+                                                    marginLeft: 10,
+                                                    fontSize: 18,
+                                                    fontWeight: "300",
+                                                }}
+                                            >
+                                                {c.studentName} 학생
+                                            </Text>
                                         </View>
                                         <Text style={{ marginTop: 8 }}>{c.dayString}</Text>
                                         {c.studentAccept ? (
@@ -117,9 +145,30 @@ export default ClassList = ({ navigation, route }) => {
                                 </TouchableOpacity>
                             ))}
                             <TouchableOpacity style={{ marginVertical: 5 }} onPress={() => navigation.navigate("AddClass")}>
-                                <Surface style={{ width: wp("90%"), height: hp("15%"), alignItems: "center", justifyContent: "center" }}>
-                                    <AntDesign name="pluscircle" size={30} color="black" style={{ margin: 13 }} />
-                                    <Text>새 수업 등록하기</Text>
+                                <Surface
+                                    style={{
+                                        width: wp("90%"),
+                                        height: hp("15%"),
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        backgroundColor: style.colorList.navy,
+                                        borderRadius: 10,
+                                    }}
+                                >
+                                    <View
+                                        style={{
+                                            borderWidth: 2,
+                                            borderColor: "white",
+                                            borderRadius: 10,
+                                            width: wp("86%"),
+                                            height: hp("13%"),
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                        }}
+                                    >
+                                        <AntDesign name="pluscircleo" size={24} color="white" />
+                                        <Text style={{ color: "white", margin: 10, fontSize: 20 }}>새 수업 등록하기</Text>
+                                    </View>
                                 </Surface>
                             </TouchableOpacity>
                         </>

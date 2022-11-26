@@ -31,8 +31,17 @@ const AddMatching = () => {
 
     const FirstQuestion = ({ navigation, route }) => {
         return (
-            <View style={{ flex: 1 }}>
-                <View style={{ flex: 10 }}>
+            <View style={{ flex: 1, backgroundColor: style.colorList.skyBlue }}>
+                <View style={{ flex: 10, padding: 20 }}>
+                    <Text
+                        style={{
+                            fontSize: 18,
+                            fontWeight: "500",
+                            marginBottom: 10,
+                        }}
+                    >
+                        원하는 과외 수업을 선택해 주세요.
+                    </Text>
                     <RadioButton.Group onValueChange={(value) => setSelectFirst(value)} value={selectFirst}>
                         <View>
                             <TouchableOpacity
@@ -90,10 +99,10 @@ const AddMatching = () => {
 
     const SecondQuestion = ({ navigation, route }) => {
         return (
-            <View style={{ flex: 1 }}>
-                <View style={{ flex: 10, padding: 10 }}>
-                    <Text>내신, 수능</Text>
-                    <View style={{ padding: 20, zIndex: 500 }}>
+            <View style={{ flex: 1, backgroundColor: style.colorList.skyBlue }}>
+                <View style={{ flex: 10, paddingHorizontal: 20, paddingVertical: 20 }}>
+                    <Text style={{ fontSize: 20, fontWeight: "500" }}>내신 및 수능</Text>
+                    <View style={{ paddingVertical: 20, zIndex: 500 }}>
                         <DropDownPicker
                             open={open}
                             value={selectSubject}
@@ -126,10 +135,10 @@ const AddMatching = () => {
 
     const ThirdQuestion = ({ navigation, route }) => {
         return (
-            <View>
-                <View>
-                    <Text>수업 방식</Text>
-                    <View>
+            <View style={{ flex: 1, backgroundColor: style.colorList.skyBlue }}>
+                <View style={{ flex: 10, paddingHorizontal: 20, paddingVertical: 20 }}>
+                    <Text style={{ fontSize: 20, fontWeight: "500" }}>수업 방식</Text>
+                    <View style={{ marginTop: 10 }}>
                         <TouchableOpacity
                             style={{ flexDirection: "row", alignItems: "center" }}
                             onPress={() => setTeachingType1(!teachingType1)}
@@ -227,13 +236,25 @@ const AddMatching = () => {
         ]);
 
         return (
-            <View style={{ flex: 1 }}>
-                <View style={{ flex: 10 }}>
-                    <TextInput label="과외비" value={money} onChangeText={setMoney} keyboardType="phone-pad" />
+            <View style={{ flex: 1, backgroundColor: style.colorList.skyBlue }}>
+                <View style={{ flex: 10, padding: 20 }}>
+                    <Text style={{ fontSize: 20, fontWeight: "500" }}>과외비를 입력해주세요</Text>
+                    <TextInput
+                        style={{ backgroundColor: "white", marginVertical: 10 }}
+                        label="과외비"
+                        value={money}
+                        onChangeText={setMoney}
+                        keyboardType="phone-pad"
+                    />
                     <View>
+                        <Text style={{ fontSize: 20, fontWeight: "500" }}>희망하는 요일과 시간을 입력해주세요</Text>
                         {list.map((day, index) => (
                             <TouchableOpacity
-                                style={{ flexDirection: "row", alignItems: "center" }}
+                                key={index}
+                                style={{
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                }}
                                 onPress={() => {
                                     let temp = [...selectDay];
                                     temp[index] = !selectDay[index];
@@ -252,10 +273,11 @@ const AddMatching = () => {
                                 <View style={{ flex: 1 }} />
                                 <TextInput
                                     dense={true}
-                                    style={{ flex: 2 }}
+                                    style={{ flex: 2, backgroundColor: "white" }}
                                     mode="outlined"
                                     maxLength={2}
                                     disabled={!selectDay[index]}
+                                    keyboardType="numeric"
                                     value={dayTime[index].startHour}
                                     onChangeText={(value) => {
                                         let temp = [...dayTime];
@@ -269,9 +291,10 @@ const AddMatching = () => {
                                 </View>
                                 <TextInput
                                     dense={true}
-                                    style={{ flex: 2 }}
+                                    style={{ flex: 2, backgroundColor: "white" }}
                                     mode="outlined"
                                     maxLength={2}
+                                    keyboardType="numeric"
                                     disabled={!selectDay[index]}
                                     value={dayTime[index].startMinute}
                                     onChangeText={(value) => {
@@ -285,9 +308,10 @@ const AddMatching = () => {
                                 </View>
                                 <TextInput
                                     dense={true}
-                                    style={{ flex: 2 }}
+                                    style={{ flex: 2, backgroundColor: "white" }}
                                     mode="outlined"
                                     maxLength={2}
+                                    keyboardType="numeric"
                                     disabled={!selectDay[index]}
                                     value={dayTime[index].endHour}
                                     onChangeText={(value) => {
@@ -301,9 +325,10 @@ const AddMatching = () => {
                                 </View>
                                 <TextInput
                                     dense={true}
-                                    style={{ flex: 2 }}
+                                    style={{ flex: 2, backgroundColor: "white" }}
                                     mode="outlined"
                                     maxLength={2}
+                                    keyboardType="numeric"
                                     disabled={!selectDay[index]}
                                     value={dayTime[index].endMinute}
                                     onChangeText={(value) => {

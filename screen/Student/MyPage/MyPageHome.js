@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Text, View, TextInput, Alert, TouchableOpacity, ScrollView } from "react-native";
+import { Text, View, TextInput, Alert, TouchableOpacity, ScrollView, StatusBar, Platform } from "react-native";
 import { AuthContext } from "../../Auth";
 import { getCurrentUser, updateUserPhoto, db, auth } from "../../../config/MyBase";
 import {
@@ -18,7 +18,7 @@ import {
 } from "firebase/firestore";
 import Image_ from "../../../component/Image.js";
 import style from "../../style";
-import { Button } from "react-native-paper";
+import { Button, Surface } from "react-native-paper";
 
 export default MyPageScreen = ({ navigation, route }) => {
     const [name, setName] = useState("");
@@ -31,6 +31,8 @@ export default MyPageScreen = ({ navigation, route }) => {
     const [photoUrl, setPhotoUrl] = useState(user.photoUrl);
     const [grade, setGrade] = useState("");
     const [schoolname, setSchoolname] = useState("");
+
+    const defaultPhotoUrl = "https://firebasestorage.googleapis.com/v0/b/crescendo-b984d.appspot.com/o/todayProfile.png?alt=media";
 
     console.log(user);
 
@@ -65,7 +67,8 @@ export default MyPageScreen = ({ navigation, route }) => {
 
     //updateUserPhoto('s');
     return (
-        <ScrollView>
+        <ScrollView style={{ backgroundColor: "#e6f7ff" }}>
+            <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "default"} />
             <View
                 style={{
                     flex: 1,
@@ -80,14 +83,19 @@ export default MyPageScreen = ({ navigation, route }) => {
                         marginVertical: 15,
                     }}
                 >
-                    <Image_ url={photoUrl} onChangeImage={_handlePhotoChange} showButton={true} rounded={true}></Image_>
+                    <Image_
+                        url={photoUrl ? photoUrl : defaultPhotoUrl}
+                        onChangeImage={_handlePhotoChange}
+                        showButton={true}
+                        rounded={true}
+                    ></Image_>
                 </View>
-                <View
+                <Surface
                     style={{
                         flex: 1,
 
                         //backgroundColor: styles.colorList.navy,
-                        backgroundColor: "#cce6ff",
+                        backgroundColor: "white",
                         //opacity: 0.2,
                         borderRadius: 15,
                         padding: 15,
@@ -98,7 +106,6 @@ export default MyPageScreen = ({ navigation, route }) => {
                         style={{
                             fontWeight: "bold",
                             fontSize: 15,
-                            color: style.colorList.navy,
                             marginBottom: 15,
                         }}
                     >
@@ -108,7 +115,6 @@ export default MyPageScreen = ({ navigation, route }) => {
                         style={{
                             fontWeight: "bold",
                             fontSize: 15,
-                            color: style.colorList.navy,
                             marginBottom: 15,
                         }}
                     >
@@ -118,7 +124,6 @@ export default MyPageScreen = ({ navigation, route }) => {
                         style={{
                             fontWeight: "bold",
                             fontSize: 15,
-                            color: style.colorList.navy,
                             marginBottom: 15,
                         }}
                     >
@@ -128,7 +133,6 @@ export default MyPageScreen = ({ navigation, route }) => {
                         style={{
                             fontWeight: "bold",
                             fontSize: 15,
-                            color: style.colorList.navy,
                             marginBottom: 15,
                         }}
                     >
@@ -138,7 +142,6 @@ export default MyPageScreen = ({ navigation, route }) => {
                         style={{
                             fontWeight: "bold",
                             fontSize: 15,
-                            color: style.colorList.navy,
                             marginBottom: 15,
                         }}
                     >
@@ -149,12 +152,11 @@ export default MyPageScreen = ({ navigation, route }) => {
                         style={{
                             fontWeight: "bold",
                             fontSize: 15,
-                            color: style.colorList.navy,
                         }}
                     >
                         {memo}
                     </Text>
-                </View>
+                </Surface>
                 <View
                     style={{
                         flex: 0.8,
@@ -165,9 +167,9 @@ export default MyPageScreen = ({ navigation, route }) => {
                     }}
                 >
                     <TouchableOpacity onPress={() => navigation.navigate("EditProfile")}>
-                        <View
+                        <Surface
                             style={{
-                                backgroundColor: "#cce6ff",
+                                backgroundColor: "white",
                                 paddingHorizontal: 15,
                                 paddingVertical: 10,
                                 marginTop: 20,
@@ -175,45 +177,45 @@ export default MyPageScreen = ({ navigation, route }) => {
                                 borderRadius: 8,
                             }}
                         >
-                            <Text style={{ fontSize: 22, color: style.colorList.navy }}>기본 프로필 설정</Text>
-                        </View>
+                            <Text style={{ fontSize: 22 }}>기본 프로필 설정</Text>
+                        </Surface>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => navigation.navigate("DailyRecordList")}>
-                        <View
+                        <Surface
                             style={{
-                                backgroundColor: "#cce6ff",
+                                backgroundColor: "white",
                                 paddingHorizontal: 15,
                                 paddingVertical: 10,
                                 marginVertical: 10,
                                 borderRadius: 8,
                             }}
                         >
-                            <Text style={{ fontSize: 22, color: style.colorList.navy }}>알림 설정</Text>
-                        </View>
+                            <Text style={{ fontSize: 22 }}>알림 설정</Text>
+                        </Surface>
                     </TouchableOpacity>
 
-                    <View
+                    <Surface
                         style={{
-                            backgroundColor: "#cce6ff",
+                            backgroundColor: "white",
                             paddingHorizontal: 15,
                             paddingVertical: 10,
                             marginVertical: 10,
                             borderRadius: 8,
                         }}
                     >
-                        <Text style={{ fontSize: 22, color: style.colorList.navy }}>QnA</Text>
-                    </View>
-                    <View
+                        <Text style={{ fontSize: 22 }}>QnA</Text>
+                    </Surface>
+                    <Surface
                         style={{
-                            backgroundColor: "#cce6ff",
+                            backgroundColor: "white",
                             paddingHorizontal: 15,
                             paddingVertical: 10,
                             marginVertical: 10,
                             borderRadius: 8,
                         }}
                     >
-                        <Text style={{ fontSize: 22, color: style.colorList.navy }}>공지사항</Text>
-                    </View>
+                        <Text style={{ fontSize: 22 }}>공지사항</Text>
+                    </Surface>
                 </View>
                 <View
                     style={{

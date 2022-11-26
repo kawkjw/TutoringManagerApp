@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, Platform, StatusBar } from "react-native";
 import Button from "../../../component/Button.js";
 import Image_ from "../../../component/Image.js";
 import style from "../../style.js";
@@ -50,7 +50,7 @@ const Item = React.memo(({ item, onPress }) => {
     }, []);
     return (
         <TouchableOpacity
-            style={style.itemContainer}
+            style={{ ...style.itemContainer, backgroundColor: "white" }}
             onPress={() => {
                 onPress({ otherUid, displayName, displayPhotoUrl, channelId: item });
             }}
@@ -188,8 +188,10 @@ const ChannelList = ({ navigation, route }) => {
         }
     }, [isFocused]);
     return (
-        <View style={style.container}>
+        <View style={{ ...style.container, padding: 15 }}>
+            <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "default"} />
             <FlatList
+                style={{ borderRadius: 20 }}
                 keyExtractor={(item) => {
                     //console.log('키 익스트래터    ', item);
                     return item;
@@ -201,15 +203,16 @@ const ChannelList = ({ navigation, route }) => {
                 }}
                 windowSize={3}
             ></FlatList>
+
             <TouchableOpacity
                 style={{
                     backgroundColor: style.colorList.navy,
                     alignItems: "center",
                     borderRadius: 10,
-                    width: style.size.width_ - 20,
+                    //width: style.size.width_ - 50,
                     padding: 10,
                     marginHorizontal: 10,
-                    marginBottom: 20,
+                    marginBottom: 5,
                 }}
                 onPress={_handleCreateButtonPress}
             >

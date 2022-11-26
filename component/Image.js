@@ -58,10 +58,12 @@ const Image_ = ({ url, imageStyle, rounded, showButton, onChangeImage, width_, h
             <Image
                 source={{ uri: url }}
                 style={{
-                    backgroundColor: "green",
+                    backgroundColor: style.colorList.skyBlue,
                     width: width_ ? width_ : 100,
                     height: height_ ? height_ : 100,
                     borderRadius: 50,
+                    // borderWidth: 0.5,
+                    // borderColor: style.colorList.grey_0,
                     // borderRadius: 8,
                     // backgroundColor: style.img.backgroundColor,
                 }}

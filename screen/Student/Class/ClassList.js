@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, ScrollView, TouchableOpacity, Text, Alert, RefreshControl } from "react-native";
+import { View, ScrollView, TouchableOpacity, Text, Alert, RefreshControl, StatusBar, Platform } from "react-native";
 import { Surface } from "react-native-paper";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { auth, db } from "../../../config/MyBase";
@@ -7,6 +7,7 @@ import { arrayRemove, deleteDoc, doc, getDoc, updateDoc } from "firebase/firesto
 import { useIsFocused } from "@react-navigation/native";
 import { pushNotificationsToPerson } from "../../../config/MyExpo";
 import { uploadNewClassSchedule } from "../../../config/calendarFunctions.js";
+import style from "../../style";
 
 export default ClassList = ({ navigation, route }) => {
     const [loading, setLoading] = useState(true);
@@ -60,8 +61,15 @@ export default ClassList = ({ navigation, route }) => {
     }, []);
 
     return (
-        <View style={{ flex: 1, alignItems: "center" }}>
-            <View style={{ flex: 10, alignSelf: "stretch" }}>
+        <View
+            style={{
+                flex: 1,
+                alignItems: "center",
+                backgroundColor: style.colorList.skyBlue,
+            }}
+        >
+            <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "default"} />
+            <View style={{ flex: 10, alignSelf: "stretch", paddingVertical: 15 }}>
                 <ScrollView
                     style={{ flex: 1, alignSelf: "stretch" }}
                     contentContainerStyle={{ alignItems: "center" }}
@@ -83,7 +91,7 @@ export default ClassList = ({ navigation, route }) => {
                             {myClass.map((c, index) => (
                                 <TouchableOpacity
                                     key={index}
-                                    style={{ marginVertical: 5 }}
+                                    style={{ marginVertical: 10 }}
                                     onPress={() => {
                                         if (!c.studentAccept) {
                                             Alert.alert("초대 수락하시겠습니까?", "", [
@@ -139,7 +147,6 @@ export default ClassList = ({ navigation, route }) => {
                                                 },
                                             ]);
                                         } else {
-                                            navigation.navigate("ViewClass", { classData: c });
                                         }
                                     }}
                                 >
@@ -147,9 +154,11 @@ export default ClassList = ({ navigation, route }) => {
                                         style={{
                                             width: wp("90%"),
                                             height: hp("15%"),
-                                            paddingHorizontal: 10,
+                                            paddingHorizontal: 20,
                                             justifyContent: "center",
                                             backgroundColor: c.studentAccept ? "white" : "#ff4d4d",
+                                            marginBottom: 10,
+                                            borderRadius: 15,
                                         }}
                                     >
                                         <View style={{ flexDirection: "row", alignItems: "flex-end" }}>

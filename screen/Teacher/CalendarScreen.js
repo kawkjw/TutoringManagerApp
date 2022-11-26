@@ -1,6 +1,6 @@
 import style from "../style.js";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text, Button, Platform, Animated } from "react-native";
+import { StyleSheet, View, Text, Button, Platform, Animated, StatusBar } from "react-native";
 import moment from "moment";
 import { getMonthLength, getWeeks } from "../../config/calendarFunctions.js";
 import { Month } from "./Calendar/Month.js";
@@ -47,6 +47,7 @@ const CalendarScreen = ({ navigation, route }) => {
                 justifyContent: "flex-start",
             }}
         >
+            <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "default"} />
             <View
                 style={{
                     flex: 0.1,

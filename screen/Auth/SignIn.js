@@ -1,12 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, TouchableOpacity, StatusBar, Keyboard, Platform, Image, Dimensions } from "react-native";
+import { View, TouchableOpacity, StatusBar, Keyboard, TextInput, Platform, Text, Image } from "react-native";
 import { AuthContext } from "../Auth";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { heightPercentageToDP as hp } from "react-native-responsive-screen";
-import { Button, TextInput } from "react-native-paper";
+import style from "../style.js";
 
 export default SignIn = ({ navigation }) => {
-    const { width } = Dimensions.get("screen");
     const [id, setId] = useState("");
     const [password, setPassword] = useState("");
     const { signIn } = useContext(AuthContext);
@@ -35,79 +33,120 @@ export default SignIn = ({ navigation }) => {
     }, [id]);
 
     return (
-        <View style={{ flex: 1, backgroundColor: "#cce6ff" }}>
+        <View style={{ flex: 1, backgroundColor: style.colorList.skyBlue }}>
             <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "default"} />
-
-            <KeyboardAwareScrollView
-                contentContainerStyle={{
-                    paddingHorizontal: -30,
-                }}
-                keyboardShouldPersistTaps="always"
-                showsVerticalScrollIndicator={false}
-                scrollEnabled={false}
-                extraScrollHeight={Platform.select({
-                    ios: 10,
-                    android: width >= 800 ? hp("18%") : hp("10%"),
-                })}
-                enableOnAndroid={true}
-                enableAutomaticScroll
+            <TouchableOpacity
+                style={{ flex: 1, alignSelf: "stretch", height: "100%" }}
+                onPress={Keyboard.dismiss}
+                accessible={false}
+                activeOpacity={1}
             >
-                <TouchableOpacity
-                    style={{ flex: 1, alignSelf: "stretch", height: "100%" }}
-                    onPress={Keyboard.dismiss}
-                    accessible={false}
-                    activeOpacity={1}
+                <KeyboardAwareScrollView
+                    contentContainerStyle={{
+                        paddingHorizontal: -30,
+                    }}
+                    keyboardShouldPersistTaps="always"
+                    showsVerticalScrollIndicator={false}
+                    scrollEnabled={false}
+                    extraScrollHeight={Platform.select({
+                        ios: 10,
+                        android: 20,
+                    })}
+                    enableOnAndroid={true}
+                    enableAutomaticScroll
                 >
-                    <View style={{ marginTop: 100, marginBottom: 30, flex: 1, alignItems: "center", justifyContent: "center" }}>
-                        <Image style={{ width: 250, height: 250 }} source={require("./todaytutor.png")} />
+                    <View
+                        style={{
+                            marginTop: 100,
+                            flex: 1,
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}
+                    >
+                        <Image style={{ width: 250, height: 250 }} source={require("./todaytutor.png")}></Image>
                     </View>
                     <View style={{ flex: 1, marginBottom: 34 }}>
                         <View style={{ paddingHorizontal: 20 }}>
                             <View style={{ marginBottom: 10 }}>
                                 <TextInput
-                                    dense={true}
                                     placeholder="아이디"
                                     value={id}
                                     onChangeText={setId}
-                                    style={{ flex: 1, backgroundColor: "white" }}
+                                    style={{
+                                        flex: 1,
+                                        borderWidth: 1,
+                                        height: 50,
+                                        backgroundColor: "white",
+                                        paddingHorizontal: 15,
+                                        borderRadius: 10,
+                                    }}
                                 />
                             </View>
                             <View style={{ marginBottom: 10 }}>
                                 <TextInput
-                                    dense={true}
                                     placeholder="비밀번호"
                                     secureTextEntry={true}
                                     value={password}
                                     onChangeText={setPassword}
-                                    style={{ flex: 1, backgroundColor: "white" }}
+                                    style={{
+                                        flex: 1,
+                                        borderWidth: 1,
+                                        height: 50,
+                                        backgroundColor: "white",
+                                        paddingHorizontal: 15,
+                                        borderRadius: 10,
+                                    }}
                                 />
                             </View>
                             <View style={{ flex: 1, flexDirection: "row", marginBottom: 10 }}>
                                 <View style={{ flex: 1, marginRight: 5 }}>
-                                    <Button
-                                        mode="contained"
-                                        color="#004080"
+                                    <TouchableOpacity
+                                        style={{
+                                            borderRadius: 10,
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            height: 40,
+                                            backgroundColor: !id || !password ? style.colorList.grey_0 : "#004080",
+                                        }}
                                         disabled={!id || !password}
                                         onPress={() => {
                                             login();
                                         }}
                                     >
-                                        로그인
-                                    </Button>
+                                        <Text style={{ color: !id || !password ? "black" : "white" }}>로그인</Text>
+                                    </TouchableOpacity>
                                 </View>
                                 <View style={{ flex: 1, marginLeft: 5 }}>
-                                    <Button mode="contained" color="#004080" onPress={() => navigation.navigate("resetpw")}>
-                                        비밀번호 초기화
-                                    </Button>
+                                    <TouchableOpacity
+                                        onPress={() => navigation.navigate("resetpw")}
+                                        style={{
+                                            borderRadius: 10,
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            height: 40,
+                                            backgroundColor: "#004080",
+                                        }}
+                                    >
+                                        <Text style={{ color: "white" }}>비밀번호 초기화</Text>
+                                    </TouchableOpacity>
                                 </View>
                             </View>
-                            <Button mode="contained" color="#004080" onPress={() => navigation.navigate("signup")}>
-                                회원가입
-                            </Button>
+                            <TouchableOpacity
+                                style={{
+                                    borderRadius: 10,
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    height: 40,
+                                    backgroundColor: "#004080",
+                                }}
+                                onPress={() => navigation.navigate("signup")}
+                            >
+                                <Text style={{ color: "white" }}>회원가입</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
-                </TouchableOpacity>
-            </KeyboardAwareScrollView>
+                </KeyboardAwareScrollView>
+            </TouchableOpacity>
         </View>
     );
 };

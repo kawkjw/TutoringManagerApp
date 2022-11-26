@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, ScrollView, TouchableOpacity, Text, FlatList, TextInput } from "react-native";
+import { View, ScrollView, TouchableOpacity, Text, FlatList, TextInput, StatusBar, Platform } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { getCurrentUser, getMatchingInfo, db } from "../../../config/MyBase.js";
 import { collection, doc, onSnapshot, query, where, getDoc, updateDoc } from "firebase/firestore";
@@ -9,9 +9,7 @@ import Image_ from "../../../component/Image.js";
 import TeacherProfile from "./TeacherProfile.js";
 
 //import { GetScore } from '../../../config/getScore.js';
-const defaultPhotoUrl = "https://firebasestorage.googleapis.com/v0/b/crescendo-b984d.appspot.com/o/photo.png?alt=media";
-//'https://firebasestorage.googleapis.com/v0/b/crescendo-b984d.appspot.com/o/logo.png?alt=media';
-//'https://firebasestorage.googleapis.com/v0/b/crescendo-b984d.appspot.com/o/defaultProfile.png?alt=media';
+const defaultPhotoUrl = "https://firebasestorage.googleapis.com/v0/b/crescendo-b984d.appspot.com/o/todayProfile.png?alt=media";
 
 export default MatchingHome = ({ navigation, route }) => {
     console.log("render MatchingHome start @@@@");
@@ -321,6 +319,7 @@ export default MatchingHome = ({ navigation, route }) => {
                 backgroundColor: style.colorList.skyBlue,
             }}
         >
+            <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "default"} />
             <View
                 style={{
                     //flex: 1.5,
@@ -670,7 +669,7 @@ export default MatchingHome = ({ navigation, route }) => {
                         //backgroundColor: 'blue',
                         flex: 2,
                         justifyContent: "space-around",
-                        alignContent: "center",
+                        alignItems: "center",
                         flexDirection: "row",
                         marginVertical: 5,
                     }}

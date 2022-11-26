@@ -118,6 +118,7 @@ export default EditMatching = ({ navigation, route }) => {
                                 borderRadius: 10,
                                 width: wp("90%"),
                                 height: hp("15%"),
+                                marginBottom: 15,
                             }}
                             onPress={() => navigation.navigate("AddMatching")}
                         >

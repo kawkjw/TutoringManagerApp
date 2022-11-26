@@ -14,6 +14,8 @@ const EditProfile = ({ navigation, route }) => {
     const user = getCurrentUser();
     const [photoUrl, setPhotoUrl] = useState(user.photoUrl);
 
+    const defaultPhotoUrl = "https://firebasestorage.googleapis.com/v0/b/crescendo-b984d.appspot.com/o/todayProfile.png?alt=media";
+
     useEffect(() => {
         const userId = getCurrentUser().uid;
         const unsub = onSnapshot(doc(db, `users/${userId}/`), (doc) => {
@@ -60,7 +62,7 @@ const EditProfile = ({ navigation, route }) => {
     };
 
     return (
-        <View style={{ flex: 1, alignItems: "center" }}>
+        <View style={{ flex: 1, alignItems: "center", backgroundColor: "#e6f7ff" }}>
             <TouchableOpacity onPress={() => Keyboard.dismiss()} activeOpacity={1}>
                 <Surface
                     style={{
@@ -80,7 +82,7 @@ const EditProfile = ({ navigation, route }) => {
                         }}
                     >
                         <Image_
-                            url={photoUrl}
+                            url={photoUrl ? photoUrl : defaultPhotoUrl}
                             onChangeImage={_handlePhotoChange}
                             showButton={true}
                             rounded={true}

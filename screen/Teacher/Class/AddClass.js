@@ -6,6 +6,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { auth, db } from "../../../config/MyBase";
 import { getDocs, query, collection, where, addDoc, updateDoc, doc, arrayUnion } from "firebase/firestore";
 import { pushNotificationsToPerson } from "../../../config/MyExpo";
+import style from "../../style";
 
 const AddClassStack = createNativeStackNavigator();
 
@@ -43,7 +44,7 @@ export default AddClass = () => {
         }, [route.params?.dayTime]);
 
         return (
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, backgroundColor: style.colorList.skyBlue }}>
                 <View style={{ flex: 10 }}>
                     <TouchableOpacity
                         style={{ alignSelf: "stretch", height: "100%" }}
@@ -66,13 +67,20 @@ export default AddClass = () => {
                             enableAutomaticScroll
                         >
                             <View style={{ padding: 10 }}>
-                                <Text>수업 이름을 입력하세요(10자 이내)</Text>
-                                <Text>이 이름은 학생과 선생님 모두에게 보여집니다.</Text>
-                                <TextInput dense={true} mode="outlined" value={className} onChangeText={setClassName} maxLength={10} />
+                                <Text style={{ fontSize: 16 }}>수업 이름을 입력하세요(10자 이내)</Text>
+                                <Text style={{ fontSize: 16 }}>이 이름은 학생과 선생님 모두에게 보여집니다.</Text>
+                                <TextInput
+                                    style={{ backgroundColor: "white" }}
+                                    dense={true}
+                                    mode="outlined"
+                                    value={className}
+                                    onChangeText={setClassName}
+                                    maxLength={10}
+                                />
                                 <HelperText visible={true}>ex) 미적분I, 영어, 생명과학 등</HelperText>
                             </View>
                             <View style={{ padding: 10 }}>
-                                <Text>과외 요일과 시간 설정</Text>
+                                <Text style={{ fontSize: 16 }}>과외 요일과 시간 설정</Text>
                                 {list.map((day, index) => (
                                     <View key={index} style={{ flexDirection: "row", alignItems: "center" }}>
                                         <Checkbox.Android
@@ -87,7 +95,8 @@ export default AddClass = () => {
                                         <View style={{ flex: 1 }} />
                                         <TextInput
                                             dense={true}
-                                            style={{ flex: 2 }}
+                                            style={{ flex: 2, backgroundColor: "white" }}
+                                            keyboardType="numeric"
                                             mode="outlined"
                                             maxLength={2}
                                             disabled={!selectDay[index]}
@@ -104,7 +113,8 @@ export default AddClass = () => {
                                         </View>
                                         <TextInput
                                             dense={true}
-                                            style={{ flex: 2 }}
+                                            style={{ flex: 2, backgroundColor: "white" }}
+                                            keyboardType="numeric"
                                             mode="outlined"
                                             maxLength={2}
                                             disabled={!selectDay[index]}
@@ -120,7 +130,8 @@ export default AddClass = () => {
                                         </View>
                                         <TextInput
                                             dense={true}
-                                            style={{ flex: 2 }}
+                                            style={{ flex: 2, backgroundColor: "white" }}
+                                            keyboardType="numeric"
                                             mode="outlined"
                                             maxLength={2}
                                             disabled={!selectDay[index]}
@@ -136,7 +147,8 @@ export default AddClass = () => {
                                         </View>
                                         <TextInput
                                             dense={true}
-                                            style={{ flex: 2 }}
+                                            keyboardType="numeric"
+                                            style={{ flex: 2, backgroundColor: "white" }}
                                             mode="outlined"
                                             maxLength={2}
                                             disabled={!selectDay[index]}
@@ -160,7 +172,11 @@ export default AddClass = () => {
                         mode="outlined"
                         contentStyle={{ flexDirection: "row-reverse" }}
                         onPress={() =>
-                            navigation.navigate("InviteStudent", { className: className, selectDay: selectDay, dayTime: dayTime })
+                            navigation.navigate("InviteStudent", {
+                                className: className,
+                                selectDay: selectDay,
+                                dayTime: dayTime,
+                            })
                         }
                         disabled={className.length === 0}
                     >
@@ -176,7 +192,7 @@ export default AddClass = () => {
         const [studentId, setStudentId] = useState("");
 
         return (
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, backgroundColor: style.colorList.skyBlue }}>
                 <View style={{ flex: 10 }}>
                     <TouchableOpacity
                         style={{ alignSelf: "stretch", height: "100%" }}
@@ -185,9 +201,10 @@ export default AddClass = () => {
                         activeOpacity={1}
                     >
                         <View style={{ padding: 10 }}>
-                            <Text>담당 학생의 ID를 입력하세요.</Text>
-                            <Text>ID는 학생의 마이페이지에서 확인할 수 있습니다.</Text>
+                            <Text style={{ fontSize: 16 }}>담당 학생의 ID를 입력하세요.</Text>
+                            <Text style={{ fontSize: 16 }}>ID는 학생의 마이페이지에서 확인할 수 있습니다.</Text>
                             <TextInput
+                                style={{ backgroundColor: "white" }}
                                 dense={true}
                                 mode="outlined"
                                 value={studentId}
@@ -205,7 +222,11 @@ export default AddClass = () => {
                         onPress={() =>
                             navigation.navigate({
                                 name: "InitialAddClass",
-                                params: { className: className, selectDay: selectDay, dayTime: dayTime },
+                                params: {
+                                    className: className,
+                                    selectDay: selectDay,
+                                    dayTime: dayTime,
+                                },
                                 merge: true,
                             })
                         }
@@ -240,7 +261,9 @@ export default AddClass = () => {
                                                         await updateDoc(doc(db, "users", auth.currentUser.uid), {
                                                             myClass: arrayUnion(document.id),
                                                         });
-                                                        await updateDoc(doc(db, "users", uid), { myClass: arrayUnion(document.id) });
+                                                        await updateDoc(doc(db, "users", uid), {
+                                                            myClass: arrayUnion(document.id),
+                                                        });
                                                         await pushNotificationsToPerson(
                                                             auth.currentUser.displayName,
                                                             uid,
