@@ -19,6 +19,7 @@ export default StudentProfile = ({ navigation, route }) => {
     const studentAddress = route?.params?.studentAddress;
     const studentPhotoUrl = route?.params?.studentPhotoUrl;
     const teachingType = studentMatchingInfo?.teachingType;
+    const introductionString = studentMatchingInfo?.introduction;
     const dayBool = studentMatchingInfo?.dayBool;
     const dayTime = studentMatchingInfo?.dayTime;
     const monTime = dayTime[0];
@@ -297,9 +298,7 @@ export default StudentProfile = ({ navigation, route }) => {
                             }}
                         >
                             <Text style={{ flex: 5, fontSize: 18 }}>
-                                어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구
-                                어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구
-                                어쩌구저쩌구어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구{" "}
+                                {introductionString === undefined ? "내용 없음" : introductionString}
                             </Text>
                         </View>
                     </View>

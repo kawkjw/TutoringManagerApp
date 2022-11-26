@@ -17,6 +17,7 @@ export default TeacherProfile = ({ navigation, route }) => {
     const teacherAddress = route?.params?.teacherAddress;
     const teacherPhotoUrl = route?.params?.teacherPhotoUrl;
     const teachingType = teacherMatchingInfo?.teachingType;
+    const introductionString = teacherMatchingInfo?.introduction;
     const dayBool = teacherMatchingInfo?.dayBool;
     const dayTime = teacherMatchingInfo?.dayTime;
     const monTime = dayTime[0];
@@ -28,6 +29,7 @@ export default TeacherProfile = ({ navigation, route }) => {
     const sunTime = dayTime[6];
     // console.log(dayBool);
     // console.log(dayTime);
+    console.log(introductionString);
 
     const getDayTimeString = () => {
         let string_ = "";
@@ -304,10 +306,7 @@ export default TeacherProfile = ({ navigation, route }) => {
                             }}
                         >
                             <Text style={{ flex: 5, fontSize: 18 }}>
-                                어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구
-                                어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구
-                                어쩌구저쩌구 어쩌구 어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구 어쩌구저쩌구
-                                어쩌구저쩌구 어쩌구저쩌구{" "}
+                                {introductionString === undefined ? "선생님이 수업 소개란을 작성하지 않았습니다." : introductionString}
                             </Text>
                         </View>
                     </View>

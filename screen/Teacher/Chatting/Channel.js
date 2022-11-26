@@ -58,9 +58,10 @@ const Channel = ({ navigation, route: { params } }) => {
 
     const _handleMessageSend = async (messageList) => {
         const newMessage = messageList[0];
+        console.log(params);
         await createMessage({ channelId: params?.channelId, message: newMessage })
             .then(async () => {
-                await getDocs(query(collection(db, "users"), where("id", "==", params.inviteUser))).then(async (users) => {
+                await getDocs(query(collection(db, "users"), where("uid", "==", params.otherUid))).then(async (users) => {
                     await pushNotificationsToPerson(auth.currentUser.displayName, users.docs[0].data().uid, "새로운 채팅", newMessage.text);
                 });
             })
