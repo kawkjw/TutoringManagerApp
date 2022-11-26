@@ -40,11 +40,12 @@ export default MyPageScreen = ({ navigation, route }) => {
         console.log("핸들 포토 체인지");
         try {
             //spinner.start();
+            console.log(url);
             const updatedUser = await updateUserPhoto(url);
 
             setPhotoUrl(updatedUser.photoUrl);
         } catch (e) {
-            Alert.alert("Photo Error", e.message);
+            console.log("Photo Error", e.message);
         } finally {
             //spinner.stop();
         }
@@ -61,6 +62,7 @@ export default MyPageScreen = ({ navigation, route }) => {
             setId(doc.data().id);
             setGrade(doc.data().grade);
             setSchoolname(doc.data().schoolName);
+            setPhotoUrl(doc.data().photoURL);
         });
         return () => unsub();
     }, []);
@@ -86,7 +88,7 @@ export default MyPageScreen = ({ navigation, route }) => {
                     <Image_
                         url={photoUrl ? photoUrl : defaultPhotoUrl}
                         onChangeImage={_handlePhotoChange}
-                        showButton={true}
+                        showButton={false}
                         rounded={true}
                     ></Image_>
                 </View>
@@ -142,19 +144,9 @@ export default MyPageScreen = ({ navigation, route }) => {
                         style={{
                             fontWeight: "bold",
                             fontSize: 15,
-                            marginBottom: 15,
                         }}
                     >
                         지역: {address}
-                    </Text>
-                    <Text style={{ textDecorationLine: "underline", marginBottom: 15 }}>자기소개{"\n"}</Text>
-                    <Text
-                        style={{
-                            fontWeight: "bold",
-                            fontSize: 15,
-                        }}
-                    >
-                        {memo}
                     </Text>
                 </Surface>
                 <View

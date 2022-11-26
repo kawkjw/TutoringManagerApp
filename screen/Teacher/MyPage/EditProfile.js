@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Surface, TextInput, Button } from "react-native-paper";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
-import { View, TouchableOpacity, Text, Keyboard } from "react-native";
-import { db, auth, getCurrentUser } from "../../../config/MyBase";
+import { View, TouchableOpacity, Text, Keyboard, Alert } from "react-native";
+import { db, auth, getCurrentUser, updateUserPhoto } from "../../../config/MyBase";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import Image_ from "../../../component/Image.js";
 
 const EditProfile = ({ navigation, route }) => {
     const [name, setName] = useState("");
-    const [memo, setMemo] = useState("");
     const [education, setEducation] = useState("");
     const [address, setAddress] = useState("");
     const user = getCurrentUser();
@@ -21,9 +20,9 @@ const EditProfile = ({ navigation, route }) => {
         const unsub = onSnapshot(doc(db, `users/${userId}/`), (doc) => {
             console.log("Current data: ", doc.data());
             setName(doc.data().name);
-            setMemo(doc.data().memo);
             setEducation(doc.data().education);
             setAddress(doc.data().address);
+            setPhotoUrl(doc.data().photoURL);
         });
         return () => unsub();
     }, []);
@@ -46,12 +45,6 @@ const EditProfile = ({ navigation, route }) => {
         console.log(name);
         await updateDoc(doc(db, "users", auth.currentUser.uid), { name: name });
     };
-
-    const changeMemo = async () => {
-        console.log(memo);
-        await updateDoc(doc(db, "users", auth.currentUser.uid), { memo: memo });
-    };
-
     const changeAddress = async () => {
         console.log(address);
         await updateDoc(doc(db, "users", auth.currentUser.uid), { address: address });
@@ -134,23 +127,6 @@ const EditProfile = ({ navigation, route }) => {
                                 style={{ marginTop: 5, marginLeft: 5, justifyContent: "center" }}
                                 mode="contained"
                                 onPress={() => changeName(name)}
-                            >
-                                수정
-                            </Button>
-                        </View>
-                        <View style={{ flexDirection: "row", marginTop: 10, marginBottom: 7 }}>
-                            <TextInput
-                                mode="outlined"
-                                multiline={true}
-                                label="자기소개"
-                                value={memo}
-                                onChangeText={setMemo}
-                                style={{ fontSize: 16, flex: 5, marginRight: 5 }}
-                            />
-                            <Button
-                                style={{ marginTop: 5, marginLeft: 5, justifyContent: "center" }}
-                                mode="contained"
-                                onPress={() => changeMemo(memo)}
                             >
                                 수정
                             </Button>

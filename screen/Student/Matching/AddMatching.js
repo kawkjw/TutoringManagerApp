@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Keyboard } from "react-native";
 import { RadioButton, Button, Checkbox, TextInput } from "react-native-paper";
 import DropDownPicker from "react-native-dropdown-picker";
 import { addDoc, collection } from "firebase/firestore";
@@ -98,37 +98,51 @@ const AddMatching = () => {
     };
 
     const SecondQuestion = ({ navigation, route }) => {
+        const [introduction, setIntroduction] = useState("");
+
         return (
             <View style={{ flex: 1, backgroundColor: style.colorList.skyBlue }}>
-                <View style={{ flex: 10, paddingHorizontal: 20, paddingVertical: 20 }}>
-                    <Text style={{ fontSize: 20, fontWeight: "500" }}>내신 및 수능</Text>
-                    <View style={{ paddingVertical: 20, zIndex: 500 }}>
-                        <DropDownPicker
-                            open={open}
-                            value={selectSubject}
-                            items={subjects}
-                            setOpen={setOpen}
-                            setValue={setSelectSubject}
-                            setItems={setSubjects}
-                            placeholder="과목 이름"
-                        />
+                <TouchableOpacity onPress={() => Keyboard.dismiss()} activeOpacity={1} style={{ flex: 1, alignSelf: "stretch" }}>
+                    <View style={{ flex: 10, paddingHorizontal: 20, paddingVertical: 20 }}>
+                        <Text style={{ fontSize: 20, fontWeight: "500" }}>내신 및 수능</Text>
+                        <View style={[{ paddingVertical: 20 }, Platform.OS === "ios" ? { zIndex: 1 } : null]}>
+                            <DropDownPicker
+                                open={open}
+                                value={selectSubject}
+                                items={subjects}
+                                setOpen={setOpen}
+                                setValue={setSelectSubject}
+                                setItems={setSubjects}
+                                placeholder="과목 이름"
+                            />
+                        </View>
+                        <View>
+                            <Text style={{ fontSize: 20, fontWeight: "500" }}>이 수업에서 배우고 싶은 내용을 써주세요</Text>
+                            <TextInput
+                                value={introduction}
+                                onChangeText={setIntroduction}
+                                multiline={true}
+                                style={{ backgroundColor: "white", marginVertical: 10, height: 300 }}
+                                label="내용"
+                            />
+                        </View>
                     </View>
-                </View>
-                <View style={{ flexDirection: "row", padding: 10 }}>
-                    <Button icon="chevron-left" mode="outlined" onPress={() => navigation.goBack()}>
-                        Prev
-                    </Button>
-                    <View style={{ flex: 1 }} />
-                    <Button
-                        icon="chevron-right"
-                        mode="outlined"
-                        contentStyle={{ flexDirection: "row-reverse" }}
-                        onPress={() => navigation.navigate("thirdQ")}
-                        disabled={selectSubject === ""}
-                    >
-                        Next
-                    </Button>
-                </View>
+                    <View style={{ flexDirection: "row", padding: 10 }}>
+                        <Button icon="chevron-left" mode="outlined" onPress={() => navigation.goBack()}>
+                            Prev
+                        </Button>
+                        <View style={{ flex: 1 }} />
+                        <Button
+                            icon="chevron-right"
+                            mode="outlined"
+                            contentStyle={{ flexDirection: "row-reverse" }}
+                            onPress={() => navigation.navigate("thirdQ", { introduction: introduction })}
+                            disabled={selectSubject === ""}
+                        >
+                            Next
+                        </Button>
+                    </View>
+                </TouchableOpacity>
             </View>
         );
     };
@@ -211,7 +225,7 @@ const AddMatching = () => {
                         icon="chevron-right"
                         mode="outlined"
                         contentStyle={{ flexDirection: "row-reverse" }}
-                        onPress={() => navigation.navigate("fourthQ")}
+                        onPress={() => navigation.navigate("fourthQ", { introduction: route.params?.introduction })}
                         disabled={!(teachingType1 || teachingType2 || teachingType3 || teachingType4 || teachingType5)}
                     >
                         Next
@@ -356,6 +370,7 @@ const AddMatching = () => {
                                 money: Number(money),
                                 dayBool: selectDay,
                                 dayTime: dayTime,
+                                introduction: route.params?.introduction,
                             }).then(() => {
                                 navigation.getParent().reset({
                                     index: 1,

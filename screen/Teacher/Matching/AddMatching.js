@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Keyboard } from "react-native";
 import { RadioButton, Button, Checkbox, TextInput } from "react-native-paper";
 import DropDownPicker from "react-native-dropdown-picker";
 import { addDoc, collection } from "firebase/firestore";
@@ -118,7 +118,7 @@ const AddMatching = () => {
             <View style={{ flex: 1, backgroundColor: style.colorList.skyBlue }}>
                 <View style={{ flex: 10, paddingHorizontal: 20, paddingVertical: 20 }}>
                     <Text style={{ fontSize: 20, fontWeight: "500" }}>내신 및 수능</Text>
-                    <View style={{ paddingVertical: 20, zIndex: 500 }}>
+                    <View style={[{ paddingVertical: 20 }, Platform.OS === "ios" ? { zIndex: 1 } : null]}>
                         <DropDownPicker
                             open={open}
                             value={selectSubject}
@@ -482,141 +482,203 @@ const AddMatching = () => {
             { startHour: 0, startMinute: 0, endHour: 0, endMinute: 0 },
         ]);
 
+        const updatePrevData = (object) => {
+            setMoney(object.money);
+            setSelectDay(object.selectDay);
+            setDayTime(object.dayTime);
+        };
+
         return (
             <View style={{ flex: 1, backgroundColor: style.colorList.skyBlue }}>
-                <View style={{ flex: 10, padding: 20 }}>
-                    <Text style={{ fontSize: 20, fontWeight: "500" }}>과외비를 입력해주세요</Text>
-                    <TextInput
-                        style={{ backgroundColor: "white", marginVertical: 10 }}
-                        label="과외비"
-                        value={money}
-                        onChangeText={setMoney}
-                        keyboardType="phone-pad"
-                    />
-                    <View>
-                        <Text style={{ fontSize: 20, fontWeight: "500" }}>희망하는 요일과 시간을 입력해주세요</Text>
-                        {list.map((day, index) => (
-                            <TouchableOpacity
-                                style={{ flexDirection: "row", alignItems: "center" }}
-                                onPress={() => {
-                                    let temp = [...selectDay];
-                                    temp[index] = !selectDay[index];
-                                    setSelectDay(temp);
-                                }}
-                            >
-                                <Checkbox.Android
-                                    status={selectDay[index] ? "checked" : "unchecked"}
+                <TouchableOpacity onPress={() => Keyboard.dismiss()} activeOpacity={1} style={{ flex: 1, alignSelf: "stretch" }}>
+                    <View style={{ flex: 10, padding: 20 }}>
+                        <Text style={{ fontSize: 20, fontWeight: "500" }}>과외비를 입력해주세요</Text>
+                        <TextInput
+                            style={{ backgroundColor: "white", marginVertical: 10 }}
+                            label="과외비"
+                            value={money}
+                            onChangeText={setMoney}
+                            keyboardType="phone-pad"
+                        />
+                        <View>
+                            <Text style={{ fontSize: 20, fontWeight: "500" }}>희망하는 요일과 시간을 입력해주세요</Text>
+                            {list.map((day, index) => (
+                                <TouchableOpacity
+                                    key={index}
+                                    style={{ flexDirection: "row", alignItems: "center" }}
                                     onPress={() => {
                                         let temp = [...selectDay];
                                         temp[index] = !selectDay[index];
                                         setSelectDay(temp);
                                     }}
-                                />
-                                <Text>{day}</Text>
-                                <View style={{ flex: 1 }} />
-                                <TextInput
-                                    dense={true}
-                                    style={{ flex: 2, backgroundColor: "white" }}
-                                    keyboardType="numeric"
-                                    mode="outlined"
-                                    maxLength={2}
-                                    disabled={!selectDay[index]}
-                                    value={dayTime[index].startHour}
-                                    onChangeText={(value) => {
-                                        let temp = [...dayTime];
-                                        temp[index].startHour = value;
-                                        setDayTime(temp);
-                                    }}
-                                />
+                                >
+                                    <Checkbox.Android
+                                        status={selectDay[index] ? "checked" : "unchecked"}
+                                        onPress={() => {
+                                            let temp = [...selectDay];
+                                            temp[index] = !selectDay[index];
+                                            setSelectDay(temp);
+                                        }}
+                                    />
+                                    <Text>{day}</Text>
+                                    <View style={{ flex: 1 }} />
+                                    <TextInput
+                                        dense={true}
+                                        style={{ flex: 2, backgroundColor: "white" }}
+                                        keyboardType="numeric"
+                                        mode="outlined"
+                                        maxLength={2}
+                                        disabled={!selectDay[index]}
+                                        value={dayTime[index].startHour}
+                                        onChangeText={(value) => {
+                                            let temp = [...dayTime];
+                                            temp[index].startHour = value;
+                                            setDayTime(temp);
+                                        }}
+                                    />
 
-                                <View style={{ flex: 1, alignItems: "center" }}>
-                                    <Text>:</Text>
-                                </View>
-                                <TextInput
-                                    dense={true}
-                                    style={{ flex: 2, backgroundColor: "white" }}
-                                    keyboardType="numeric"
-                                    mode="outlined"
-                                    maxLength={2}
-                                    disabled={!selectDay[index]}
-                                    value={dayTime[index].startMinute}
-                                    onChangeText={(value) => {
-                                        let temp = [...dayTime];
-                                        temp[index].startMinute = value;
-                                        setDayTime(temp);
-                                    }}
-                                />
-                                <View style={{ flex: 1, alignItems: "center" }}>
-                                    <Text>~</Text>
-                                </View>
-                                <TextInput
-                                    dense={true}
-                                    style={{ flex: 2, backgroundColor: "white" }}
-                                    keyboardType="numeric"
-                                    mode="outlined"
-                                    maxLength={2}
-                                    disabled={!selectDay[index]}
-                                    value={dayTime[index].endHour}
-                                    onChangeText={(value) => {
-                                        let temp = [...dayTime];
-                                        temp[index].endHour = value;
-                                        setDayTime(temp);
-                                    }}
-                                />
-                                <View style={{ flex: 1, alignItems: "center" }}>
-                                    <Text>:</Text>
-                                </View>
-                                <TextInput
-                                    dense={true}
-                                    style={{ flex: 2, backgroundColor: "white" }}
-                                    keyboardType="numeric"
-                                    mode="outlined"
-                                    maxLength={2}
-                                    disabled={!selectDay[index]}
-                                    value={dayTime[index].endMinute}
-                                    onChangeText={(value) => {
-                                        let temp = [...dayTime];
-                                        temp[index].endMinute = value;
-                                        setDayTime(temp);
-                                    }}
-                                />
-                            </TouchableOpacity>
-                        ))}
+                                    <View style={{ flex: 1, alignItems: "center" }}>
+                                        <Text>:</Text>
+                                    </View>
+                                    <TextInput
+                                        dense={true}
+                                        style={{ flex: 2, backgroundColor: "white" }}
+                                        keyboardType="numeric"
+                                        mode="outlined"
+                                        maxLength={2}
+                                        disabled={!selectDay[index]}
+                                        value={dayTime[index].startMinute}
+                                        onChangeText={(value) => {
+                                            let temp = [...dayTime];
+                                            temp[index].startMinute = value;
+                                            setDayTime(temp);
+                                        }}
+                                    />
+                                    <View style={{ flex: 1, alignItems: "center" }}>
+                                        <Text>~</Text>
+                                    </View>
+                                    <TextInput
+                                        dense={true}
+                                        style={{ flex: 2, backgroundColor: "white" }}
+                                        keyboardType="numeric"
+                                        mode="outlined"
+                                        maxLength={2}
+                                        disabled={!selectDay[index]}
+                                        value={dayTime[index].endHour}
+                                        onChangeText={(value) => {
+                                            let temp = [...dayTime];
+                                            temp[index].endHour = value;
+                                            setDayTime(temp);
+                                        }}
+                                    />
+                                    <View style={{ flex: 1, alignItems: "center" }}>
+                                        <Text>:</Text>
+                                    </View>
+                                    <TextInput
+                                        dense={true}
+                                        style={{ flex: 2, backgroundColor: "white" }}
+                                        keyboardType="numeric"
+                                        mode="outlined"
+                                        maxLength={2}
+                                        disabled={!selectDay[index]}
+                                        value={dayTime[index].endMinute}
+                                        onChangeText={(value) => {
+                                            let temp = [...dayTime];
+                                            temp[index].endMinute = value;
+                                            setDayTime(temp);
+                                        }}
+                                    />
+                                </TouchableOpacity>
+                            ))}
+                        </View>
                     </View>
-                </View>
-                <View style={{ flexDirection: "row", padding: 10 }}>
-                    <Button icon="chevron-left" mode="outlined" onPress={() => navigation.goBack()}>
-                        Prev
-                    </Button>
-                    <View style={{ flex: 1 }} />
-                    <Button
-                        mode="outlined"
-                        onPress={async () => {
-                            await addDoc(collection(db, "users", auth.currentUser.uid, "matching"), {
-                                matchingKind: selectFirst,
-                                subject: selectSubject,
-                                elementary: elementaryChecked,
-                                middle: middleChecked,
-                                high1: high1Checked,
-                                high2: high2Checked,
-                                high3: high3Checked,
-                                teachingType: [teachingType1, teachingType2, teachingType3, teachingType4, teachingType5],
-                                money: Number(money),
-                                dayBool: selectDay,
-                                dayTime: dayTime,
-                                educationLevel: levels,
-                            }).then(() => {
-                                navigation.getParent().reset({
-                                    index: 1,
-                                    routes: [{ name: "MatchingHome" }, { name: "EditMatching" }],
+                    <View style={{ flexDirection: "row", padding: 10 }}>
+                        <Button icon="chevron-left" mode="outlined" onPress={() => navigation.goBack()}>
+                            Prev
+                        </Button>
+                        <View style={{ flex: 1 }} />
+                        <Button
+                            icon="chevron-right"
+                            mode="outlined"
+                            contentStyle={{ flexDirection: "row-reverse" }}
+                            onPress={() =>
+                                navigation.navigate("fifthQ", {
+                                    money: money,
+                                    dayTime: dayTime,
+                                    selectDay: selectDay,
+                                    updatePrevData: updatePrevData,
+                                })
+                            }
+                            disabled={money === ""}
+                        >
+                            Next
+                        </Button>
+                    </View>
+                </TouchableOpacity>
+            </View>
+        );
+    };
+
+    const FifthQuestion = ({ navigation, route }) => {
+        const { updatePrevData, money, dayTime, selectDay } = route.params;
+        const [introduction, setIntroduction] = useState("");
+
+        return (
+            <View style={{ flex: 1, backgroundColor: style.colorList.skyBlue }}>
+                <TouchableOpacity onPress={() => Keyboard.dismiss()} activeOpacity={1} style={{ flex: 1, alignSelf: "stretch" }}>
+                    <View style={{ flex: 10, paddingHorizontal: 20, paddingVertical: 20 }}>
+                        <Text style={{ fontSize: 20, fontWeight: "500" }}>이 수업의 장점과 가르치는 내용을 써주세요</Text>
+                        <TextInput
+                            value={introduction}
+                            onChangeText={setIntroduction}
+                            multiline={true}
+                            style={{ backgroundColor: "white", marginVertical: 10, height: 300 }}
+                            label="과외 소개"
+                        />
+                    </View>
+                    <View style={{ flexDirection: "row", padding: 10 }}>
+                        <Button
+                            icon="chevron-left"
+                            mode="outlined"
+                            onPress={() => {
+                                updatePrevData({ money: money, dayTime: dayTime, selectDay: selectDay });
+                                navigation.goBack();
+                            }}
+                        >
+                            Prev
+                        </Button>
+                        <View style={{ flex: 1 }} />
+
+                        <Button
+                            mode="outlined"
+                            onPress={async () => {
+                                await addDoc(collection(db, "users", auth.currentUser.uid, "matching"), {
+                                    matchingKind: selectFirst,
+                                    subject: selectSubject,
+                                    elementary: elementaryChecked,
+                                    middle: middleChecked,
+                                    high1: high1Checked,
+                                    high2: high2Checked,
+                                    high3: high3Checked,
+                                    teachingType: [teachingType1, teachingType2, teachingType3, teachingType4, teachingType5],
+                                    money: Number(money),
+                                    dayBool: selectDay,
+                                    dayTime: dayTime,
+                                    educationLevel: levels,
+                                    introduction: introduction,
+                                }).then(() => {
+                                    navigation.getParent().reset({
+                                        index: 1,
+                                        routes: [{ name: "MatchingHome" }, { name: "EditMatching" }],
+                                    });
                                 });
-                            });
-                        }}
-                        disabled={money === ""}
-                    >
-                        Submit
-                    </Button>
-                </View>
+                            }}
+                            disabled={introduction === ""}
+                        >
+                            Submit
+                        </Button>
+                    </View>
+                </TouchableOpacity>
             </View>
         );
     };
@@ -627,6 +689,7 @@ const AddMatching = () => {
             <AddMatchingStack.Screen options={{ headerShown: false }} name="secondQ" component={SecondQuestion} />
             <AddMatchingStack.Screen options={{ headerShown: false }} name="thirdQ" component={ThirdQuestion} />
             <AddMatchingStack.Screen options={{ headerShown: false }} name="fourthQ" component={FourthQuestion} />
+            <AddMatchingStack.Screen options={{ headerShown: false }} name="fifthQ" component={FifthQuestion} />
         </AddMatchingStack.Navigator>
     );
 };

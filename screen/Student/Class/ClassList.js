@@ -147,6 +147,7 @@ export default ClassList = ({ navigation, route }) => {
                                                 },
                                             ]);
                                         } else {
+                                            navigation.navigate("ViewClass", { classData: c });
                                         }
                                     }}
                                 >

@@ -76,7 +76,7 @@ export default MyPageScreen = ({ navigation, route }) => {
                     <Image_
                         url={photoUrl ? photoUrl : defaultPhotoUrl}
                         onChangeImage={_handlePhotoChange}
-                        showButton={true}
+                        showButton={false}
                         rounded={true}
                         width_={100}
                         height_={100}
@@ -97,9 +97,7 @@ export default MyPageScreen = ({ navigation, route }) => {
                     <Text style={{ fontWeight: "bold", fontSize: 15, marginBottom: 15 }}>아이디: {id}</Text>
                     <Text style={{ fontWeight: "bold", fontSize: 15, marginBottom: 15 }}>이름: {name}</Text>
                     <Text style={{ fontWeight: "bold", fontSize: 15, marginBottom: 15 }}>학력: {education}</Text>
-                    <Text style={{ fontWeight: "bold", fontSize: 15, marginBottom: 15 }}>지역: {address}</Text>
-                    <Text style={{ textDecorationLine: "underline" }}>자기소개</Text>
-                    <Text style={{ fontWeight: "bold", fontSize: 15, marginBottom: 15 }}>{memo}</Text>
+                    <Text style={{ fontWeight: "bold", fontSize: 15 }}>지역: {address}</Text>
                 </Surface>
                 <View
                     style={{
