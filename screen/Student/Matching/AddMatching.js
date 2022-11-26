@@ -6,6 +6,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import { addDoc, collection } from "firebase/firestore";
 import { auth, db } from "../../../config/MyBase";
 import style from "../../style.js";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const AddMatchingStack = createNativeStackNavigator();
 
@@ -48,7 +49,7 @@ const AddMatching = () => {
                                 style={{ flexDirection: "row", alignItems: "center" }}
                                 onPress={() => setSelectFirst("first")}
                             >
-                                <RadioButton.Android value="first" color="black" />
+                                <RadioButton.Android value="first" />
                                 <Text>내신, 수능</Text>
                             </TouchableOpacity>
                         </View>
@@ -57,7 +58,7 @@ const AddMatching = () => {
                                 style={{ flexDirection: "row", alignItems: "center" }}
                                 onPress={() => setSelectFirst("second")}
                             >
-                                <RadioButton.Android value="second" color="black" />
+                                <RadioButton.Android value="second" />
                                 <Text>취미 관련</Text>
                             </TouchableOpacity>
                         </View>
@@ -66,7 +67,7 @@ const AddMatching = () => {
                                 style={{ flexDirection: "row", alignItems: "center" }}
                                 onPress={() => setSelectFirst("third")}
                             >
-                                <RadioButton.Android value="third" color="black" />
+                                <RadioButton.Android value="third" />
                                 <Text>커리어 관련</Text>
                             </TouchableOpacity>
                         </View>
@@ -75,7 +76,7 @@ const AddMatching = () => {
                                 style={{ flexDirection: "row", alignItems: "center" }}
                                 onPress={() => setSelectFirst("fourth")}
                             >
-                                <RadioButton.Android value="fourth" color="black" />
+                                <RadioButton.Android value="fourth" />
                                 <Text>기타</Text>
                             </TouchableOpacity>
                         </View>
@@ -137,7 +138,7 @@ const AddMatching = () => {
                             mode="outlined"
                             contentStyle={{ flexDirection: "row-reverse" }}
                             onPress={() => navigation.navigate("thirdQ", { introduction: introduction })}
-                            disabled={selectSubject === ""}
+                            disabled={selectSubject === "" || introduction === ""}
                         >
                             Next
                         </Button>
@@ -252,110 +253,121 @@ const AddMatching = () => {
         return (
             <View style={{ flex: 1, backgroundColor: style.colorList.skyBlue }}>
                 <TouchableOpacity onPress={() => Keyboard.dismiss()} activeOpacity={1} style={{ flex: 1, alignSelf: "stretch" }}>
-                    <View style={{ flex: 10, padding: 20 }}>
-                        <Text style={{ fontSize: 20, fontWeight: "500" }}>과외비를 입력해주세요</Text>
-                        <TextInput
-                            style={{ backgroundColor: "white", marginVertical: 10 }}
-                            label="과외비"
-                            value={money}
-                            onChangeText={setMoney}
-                            keyboardType="phone-pad"
-                        />
-                        <View>
-                            <Text style={{ fontSize: 20, fontWeight: "500" }}>희망하는 요일과 시간을 입력해주세요</Text>
-                            {list.map((day, index) => (
-                                <TouchableOpacity
-                                    key={index}
-                                    style={{
-                                        flexDirection: "row",
-                                        alignItems: "center",
-                                    }}
-                                    onPress={() => {
-                                        let temp = [...selectDay];
-                                        temp[index] = !selectDay[index];
-                                        setSelectDay(temp);
-                                    }}
-                                >
-                                    <Checkbox.Android
-                                        status={selectDay[index] ? "checked" : "unchecked"}
-                                        onPress={() => {
-                                            let temp = [...selectDay];
-                                            temp[index] = !selectDay[index];
-                                            setSelectDay(temp);
+                    <KeyboardAwareScrollView
+                        contentContainerStyle={{
+                            paddingHorizontal: -30,
+                        }}
+                        keyboardShouldPersistTaps="always"
+                        showsVerticalScrollIndicator={false}
+                        scrollEnabled={false}
+                        extraScrollHeight={Platform.select({
+                            ios: 10,
+                            android: 20,
+                        })}
+                        enableOnAndroid={true}
+                        enableAutomaticScroll
+                        style={{ flex: 1, alignSelf: "stretch" }}
+                    >
+                        <View style={{ flex: 10, padding: 20 }}>
+                            <Text style={{ fontSize: 20, fontWeight: "500" }}>과외비를 입력해주세요</Text>
+                            <TextInput
+                                style={{ backgroundColor: "white", marginVertical: 10 }}
+                                label="과외비"
+                                value={money}
+                                onChangeText={setMoney}
+                                keyboardType="phone-pad"
+                            />
+                            <View>
+                                <Text style={{ fontSize: 20, fontWeight: "500" }}>희망하는 요일과 시간을 입력해주세요</Text>
+                                {list.map((day, index) => (
+                                    <View
+                                        key={index}
+                                        style={{
+                                            flexDirection: "row",
+                                            alignItems: "center",
                                         }}
-                                    />
-                                    <Text>{day}</Text>
-                                    <View style={{ flex: 1 }} />
-                                    <TextInput
-                                        dense={true}
-                                        style={{ flex: 2, backgroundColor: "white" }}
-                                        mode="outlined"
-                                        maxLength={2}
-                                        disabled={!selectDay[index]}
-                                        keyboardType="numeric"
-                                        value={dayTime[index].startHour}
-                                        onChangeText={(value) => {
-                                            let temp = [...dayTime];
-                                            temp[index].startHour = value;
-                                            setDayTime(temp);
-                                        }}
-                                    />
+                                    >
+                                        <Checkbox.Android
+                                            status={selectDay[index] ? "checked" : "unchecked"}
+                                            onPress={() => {
+                                                let temp = [...selectDay];
+                                                temp[index] = !selectDay[index];
+                                                setSelectDay(temp);
+                                            }}
+                                        />
+                                        <Text>{day}</Text>
+                                        <View style={{ flex: 1 }} />
+                                        <TextInput
+                                            dense={true}
+                                            style={{ flex: 2, backgroundColor: "white" }}
+                                            mode="outlined"
+                                            maxLength={2}
+                                            disabled={!selectDay[index]}
+                                            keyboardType="numeric"
+                                            value={dayTime[index].startHour}
+                                            onChangeText={(value) => {
+                                                let temp = [...dayTime];
+                                                temp[index].startHour = value;
+                                                setDayTime(temp);
+                                            }}
+                                        />
 
-                                    <View style={{ flex: 1, alignItems: "center" }}>
-                                        <Text>:</Text>
+                                        <View style={{ flex: 1, alignItems: "center" }}>
+                                            <Text>:</Text>
+                                        </View>
+                                        <TextInput
+                                            dense={true}
+                                            style={{ flex: 2, backgroundColor: "white" }}
+                                            mode="outlined"
+                                            maxLength={2}
+                                            keyboardType="numeric"
+                                            disabled={!selectDay[index]}
+                                            value={dayTime[index].startMinute}
+                                            onChangeText={(value) => {
+                                                let temp = [...dayTime];
+                                                temp[index].startMinute = value;
+                                                setDayTime(temp);
+                                            }}
+                                        />
+                                        <View style={{ flex: 1, alignItems: "center" }}>
+                                            <Text>~</Text>
+                                        </View>
+                                        <TextInput
+                                            dense={true}
+                                            style={{ flex: 2, backgroundColor: "white" }}
+                                            mode="outlined"
+                                            maxLength={2}
+                                            keyboardType="numeric"
+                                            disabled={!selectDay[index]}
+                                            value={dayTime[index].endHour}
+                                            onChangeText={(value) => {
+                                                let temp = [...dayTime];
+                                                temp[index].endHour = value;
+                                                setDayTime(temp);
+                                            }}
+                                        />
+                                        <View style={{ flex: 1, alignItems: "center" }}>
+                                            <Text>:</Text>
+                                        </View>
+                                        <TextInput
+                                            dense={true}
+                                            style={{ flex: 2, backgroundColor: "white" }}
+                                            mode="outlined"
+                                            maxLength={2}
+                                            keyboardType="numeric"
+                                            disabled={!selectDay[index]}
+                                            value={dayTime[index].endMinute}
+                                            onChangeText={(value) => {
+                                                let temp = [...dayTime];
+                                                temp[index].endMinute = value;
+                                                setDayTime(temp);
+                                            }}
+                                        />
                                     </View>
-                                    <TextInput
-                                        dense={true}
-                                        style={{ flex: 2, backgroundColor: "white" }}
-                                        mode="outlined"
-                                        maxLength={2}
-                                        keyboardType="numeric"
-                                        disabled={!selectDay[index]}
-                                        value={dayTime[index].startMinute}
-                                        onChangeText={(value) => {
-                                            let temp = [...dayTime];
-                                            temp[index].startMinute = value;
-                                            setDayTime(temp);
-                                        }}
-                                    />
-                                    <View style={{ flex: 1, alignItems: "center" }}>
-                                        <Text>~</Text>
-                                    </View>
-                                    <TextInput
-                                        dense={true}
-                                        style={{ flex: 2, backgroundColor: "white" }}
-                                        mode="outlined"
-                                        maxLength={2}
-                                        keyboardType="numeric"
-                                        disabled={!selectDay[index]}
-                                        value={dayTime[index].endHour}
-                                        onChangeText={(value) => {
-                                            let temp = [...dayTime];
-                                            temp[index].endHour = value;
-                                            setDayTime(temp);
-                                        }}
-                                    />
-                                    <View style={{ flex: 1, alignItems: "center" }}>
-                                        <Text>:</Text>
-                                    </View>
-                                    <TextInput
-                                        dense={true}
-                                        style={{ flex: 2, backgroundColor: "white" }}
-                                        mode="outlined"
-                                        maxLength={2}
-                                        keyboardType="numeric"
-                                        disabled={!selectDay[index]}
-                                        value={dayTime[index].endMinute}
-                                        onChangeText={(value) => {
-                                            let temp = [...dayTime];
-                                            temp[index].endMinute = value;
-                                            setDayTime(temp);
-                                        }}
-                                    />
-                                </TouchableOpacity>
-                            ))}
+                                ))}
+                            </View>
                         </View>
-                    </View>
+                    </KeyboardAwareScrollView>
                     <View style={{ flexDirection: "row", padding: 10 }}>
                         <Button icon="chevron-left" mode="outlined" onPress={() => navigation.goBack()}>
                             Prev
